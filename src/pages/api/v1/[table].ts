@@ -1,3 +1,5 @@
+export const prerender = false
+
 import type { APIRoute } from 'astro';
 
 const usernames = ["Sarah", "Chris", "Yan", "Elian"]
@@ -19,3 +21,14 @@ export function getStaticPaths() {
     { params: { table: "3"} }
   ]
 }
+
+// export const prerender = false
+// import type { APIRoute } from 'astro'
+
+// export const GET: APIRoute = () => {
+//   return new Response(
+//     JSON.stringify({
+//       greeting: 'Hello',
+//     }),
+//   )
+// }
