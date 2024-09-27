@@ -1,7 +1,7 @@
 import { drizzle } from 'drizzle-orm/d1';
 import { and, eq } from 'drizzle-orm';
 import { tableSchemas } from '../db/routes';
-var qs = require('qs');
+import qs from 'qs';
 
 export async function getAllContent(db) {
   const { results } = await db.prepare('SELECT * FROM users').all();

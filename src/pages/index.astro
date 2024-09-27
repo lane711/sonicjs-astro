@@ -1,16 +1,16 @@
 ---
 export const prerender = false
-import { desc } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/d1";
-import { linkShare } from "../db/schema";
+// import { desc } from "drizzle-orm";
+// import { drizzle } from "drizzle-orm/d1";
+// import { linkShare } from "../db/schema";
 
-const { env } = Astro.locals.runtime;
-const db = drizzle(env.D1);
+// const { env } = Astro.locals.runtime;
+// const db = drizzle(env.D1);
 
-const links = await db
-  .select()
-  .from(linkShare)
-  .orderBy(desc(linkShare.created));
+// const links = await db
+//   .select()
+//   .from(linkShare)
+//   .orderBy(desc(linkShare.created));
 ---
 
 <html lang="en">
@@ -27,13 +27,13 @@ const links = await db
     </h1>
     <h1>Shared Links</h1>
     <ul>
-      {
+      <!-- {
         links.map((link) => (
           <li>
             <a href={link.url}>{link.title}</a>
           </li>
         ))
-      }
+      } -->
     </ul>
   </body>
 </html>
