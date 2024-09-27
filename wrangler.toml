@@ -1,6 +1,6 @@
 
 
 [[d1_databases]]
-binding = "DB" # i.e. available in your Worker on env.DB
+binding = "D1" # i.e. available in your Worker on env.DB
 database_name = "sonicjs-astro"
 database_id = "38e33498-2259-449f-8760-ea10f41a71cc"

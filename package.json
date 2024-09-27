@@ -9,17 +9,30 @@
     "preview": "astro preview",
     "astro": "astro",
     "test": "vitest run",
-    "test:watch": "vitest run"
+    "test:watch": "vitest run",
+    "db:generate": "drizzle-kit generate",
+		"db:migrate:local": "wrangler d1 migrations apply sonicjs-astro --local",
+		"db:migrate:prod": "wrangler d1 migrations apply sonicjs-astro  --remote",
+		"db:migrate:preview": "wrangler d1 migrations apply --env preview d1-demo-preview-db --remote",
+    "db:studio:local": "LOCAL_DB_PATH=$(find .wrangler/state/v3/d1/miniflare-D1DatabaseObject -type f -name '*.sqlite' -print -quit) drizzle-kit studio",
+		"db:studio:preview": "source .drizzle.env && DB_ID='yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy' drizzle-kit studio",
+		"db:studio:prod": "source .drizzle.env && DB_ID='xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx' drizzle-kit studio"
+	}
   },
   "dependencies": {
     "@astrojs/check": "^0.9.3",
     "@astrojs/cloudflare": "^11.1.0",
     "@astrojs/tailwind": "^5.1.1",
     "astro": "^4.15.9",
+    "drizzle-orm": "^0.33.0",
     "tailwindcss": "^3.4.13",
     "typescript": "^5.6.2"
   },
   "devDependencies": {
+    "@types/node": "^22.7.3",
+    "better-sqlite3": "^11.3.0",
+    "cross-env": "^7.0.3",
+    "drizzle-kit": "^0.24.2",
     "vitest": "^2.1.1",
     "wrangler": "^3.78.11"
   }
