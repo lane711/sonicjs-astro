@@ -5,8 +5,8 @@ import * as posts from './posts';
 import * as comments from './comments';
 import * as userKeys from './userKeys';
 import * as userSessions from './userSessions';
-import { ApiConfig } from '../routes';
 import { isAdmin, isAdminOrEditor, isAdminOrUser } from '../config-helpers';
+import type { ApiConfig } from '../routes';
 export const tableName = 'users';
 
 export const route = 'users';

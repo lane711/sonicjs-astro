@@ -5,8 +5,8 @@ import { auditSchema } from './audit';
 import * as users from './users';
 import * as categoriesToPosts from './categoriesToPosts';
 import * as comments from './comments';
-import { ApiConfig } from '../routes';
 import { isAdmin, isAdminOrEditor } from '../config-helpers';
+import type { ApiConfig } from '../routes';
 
 export const tableName = 'posts';
 
@@ -91,13 +91,13 @@ export const access: ApiConfig['access'] = {
 export const hooks: ApiConfig['hooks'] = {
   resolveInput: {
     create: (ctx, data) => {
-      if (ctx.get('user')?.userId) {
+      if (ctx.locals.runtime.user?.userId) {
         data.userId = ctx.get('user').userId;
       }
       return data;
     },
     update: (ctx, id, data) => {
-      if (ctx.get('user')?.userId) {
+      if (ctx.locals.get('user')?.userId) {
         data.userId = ctx.get('user').userId;
       }
       return data;
