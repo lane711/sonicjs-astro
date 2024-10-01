@@ -1,9 +1,11 @@
-import { tableSchemas } from '../../db/routes';
+import { tableSchemas } from '../db/routes';
 import { drizzle } from 'drizzle-orm/d1';
 import { isNotNull } from 'drizzle-orm';
-import { getRecords } from '../data/data';
-import { AppContext } from '../../server';
-import type { SonicJSFilter, ApiConfig } from '../../db/routes';
+// import { getRecords } from '../data/data';
+// import { AppContext as APIContext } from '../../server';
+import type { APIContext as AppContext } from "astro";
+
+import type { SonicJSFilter, ApiConfig } from '../db/routes';
 
 export const hasUser = async (ctx: AppContext) => {
   const fn = async function () {
