@@ -1,4 +1,3 @@
-export const prerender = false;
 import qs from "qs";
 
 import type { APIRoute } from "astro";

@@ -1,4 +1,3 @@
-export const prerender = false
 
 // import { expect, test } from 'vitest'
 // import { GET } from './[table]'
