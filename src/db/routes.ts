@@ -219,3 +219,8 @@ export const config: SonicJSConfig = {
   apiConfig: apiConfig,
   adminAccessControl: isAdminOrEditor
 };
+
+export const sonicJsConfig: SonicJSConfig = {
+  apiConfig: apiConfig,
+  adminAccessControl: isAdminOrEditor
+};

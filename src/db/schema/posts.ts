@@ -104,6 +104,7 @@ export const hooks: ApiConfig['hooks'] = {
     }
   }
 };
+
 export const fields: ApiConfig['fields'] = {
   image: {
     type: 'file',
