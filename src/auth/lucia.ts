@@ -1,17 +1,26 @@
-import { LuciaError, lucia } from 'lucia';
-import {
-  generateLuciaPasswordHash,
-  generateRandomString,
-  validateLuciaPasswordHash
-} from 'lucia/utils';
+import { Lucia } from 'lucia';
+// import {
+//   generateLuciaPasswordHash,
+//   generateRandomString,
+//   validateLuciaPasswordHash
+// } from 'lucia/';
 import { d1 } from '@lucia-auth/adapter-sqlite';
-import { hono } from 'lucia/middleware';
-import { Bindings } from '../types/bindings';
-import { Context } from 'hono';
-import { prepareD1Data } from '../data/d1-data';
-import { v4 as uuidv4 } from 'uuid';
+// import { hono } from 'lucia/middleware';
+// import { Bindings } from '../types/bindings';
+// import { Context } from 'hono';
+// import { prepareD1Data } from '../services/data/d1-data';
+// import { v4 as uuidv4 } from 'uuid';
 import { sonicAdapter } from './sonicAdapter';
-import { Variables } from '../../server';
+// import { Variables } from '../../server';
+import { hash } from "@node-rs/argon2";
+
+export const lucia = new Lucia(sonicAdapter, {
+	sessionCookie: {
+		attributes: {
+			secure: true
+		}
+	}
+});
 
 export type Session = {
   user: any;
@@ -74,12 +83,19 @@ async function hashPassword(
       )
     };
   } else {
+    //TODO hash password
     return {
       kdf,
       hash,
       salt,
       iterations,
-      hashedPassword: await generateLuciaPasswordHash(password)
+      hashedPassword: await hash(password, {
+        // recommended minimum parameters
+        memoryCost: 19456,
+        timeCost: 2,
+        outputLen: 32,
+        parallelism: 1
+      });
     };
   }
   // let uint8Array = new Uint8Array(exportedKey);
