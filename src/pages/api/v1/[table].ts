@@ -16,10 +16,10 @@ export const GET: APIRoute = async (context) => {
   const params = context.params;
 
   const tableName = params.table;
-  let entry = apiConfig.filter((tbl) => tbl.table === tableName);
-  if (entry.length) {
-    entry = entry[0];
-  } else {
+  let entry;
+  try {
+    entry = apiConfig.filter((tbl) => tbl.table === tableName)[0];
+  } catch (error) {
     return new Response(
       JSON.stringify({
         error: `Table "${tableName}" not defined in your schema`,
@@ -59,7 +59,12 @@ export const GET: APIRoute = async (context) => {
   }
 
   if (!accessControlResult) {
-    return context.text("Unauthorized", 401);
+    return new Response(
+      JSON.stringify({
+        error: `Unauthorized`,
+      }),
+      { status: 401 }
+    );
   }
 
   try {
@@ -82,7 +87,12 @@ export const GET: APIRoute = async (context) => {
         data
       );
       if (!accessControlResult) {
-        return context.text("Unauthorized", 401);
+        return new Response(
+          JSON.stringify({
+            error: `Unauthorized`,
+          }),
+          { status: 401 }
+        );
       }
     }
     data.data = await filterReadFieldAccess(
@@ -92,14 +102,14 @@ export const GET: APIRoute = async (context) => {
     );
 
     if (entry.hooks?.afterOperation) {
-      await entry.hooks.afterOperation(ctx, "read", params.id, null, data);
+      await entry.hooks.afterOperation(context, "read", params.id, null, data);
     }
 
     const end = Date.now();
     const executionTime = end - start;
     // timerLog('api get', start, end);
 
-    // return ctx.json({ ...data, executionTime });
+    // return context.json({ ...data, executionTime });
     return new Response(
       JSON.stringify({
         data,
@@ -110,7 +120,7 @@ export const GET: APIRoute = async (context) => {
     console.log(error);
     return new Response(
       JSON.stringify({
-        error
+        error,
       }),
       { status: 500 }
     );

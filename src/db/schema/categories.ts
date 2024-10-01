@@ -1,9 +1,10 @@
 import { sqliteTable, text } from 'drizzle-orm/sqlite-core';
 import { relations } from 'drizzle-orm';
 import { auditSchema } from './audit';
-import * as categoriesToPosts from './categoriesToPosts';
-import { ApiConfig } from '../routes';
+// import * as categoriesToPosts from './categoriesToPosts';
+
 import { isAdminOrEditor } from '../config-helpers';
+import type { ApiConfig } from '../routes';
 
 export const tableName = 'categories';
 
@@ -20,9 +21,9 @@ export const table = sqliteTable(tableName, {
   ...auditSchema
 });
 
-export const relation = relations(table, ({ many }) => ({
-  posts: many(categoriesToPosts.table)
-}));
+// export const relation = relations(table, ({ many }) => ({
+//   posts: many(categoriesToPosts.table)
+// }));
 
 export const access: ApiConfig['access'] = {
   operation: {

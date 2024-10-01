@@ -42,42 +42,6 @@ import { uuid } from './utils';
 //   return kvData;
 // }
 
-export async function getRecord(
-  d1,
-  kv,
-  table,
-  params,
-  cacheKey,
-  source = "fastest"
-) {
-//   const cacheStatusValid = await isCacheValid();
-
-//   if (cacheStatusValid) {
-//     const cacheResult = await getFromInMemoryCache(cacheKey);
-//     // console.log("cacheResult", cacheResult);
-//     if (cacheResult && cacheResult.length && source == "fastest") {
-//       const cachedData = cacheResult[0].data;
-//       // console.log("**** cachedData ****", cachedData);
-
-//       return cachedData;
-//     }
-//   }
-
-//   const kvData = await getRecordFromKvCache(kv, cacheKey);
-//   if (source == "kv" || kvData) {
-//     console.log("**** getting kv cache ****", kvData);
-//     return kvData;
-//   }
-
-  const d1Data = await getD1ByTableAndId(d1, table, params.id);
-
-//   addToInMemoryCache(cacheKey, { data: d1Data.data, source: "cache" });
-//   addToKvCache(kv, cacheKey, { data: d1Data.data, source: "kv" });
-
-  // console.log("sql results ==>", results);
-
-  return d1Data;
-}
 
 export async function getRecords(
   context,
@@ -274,13 +238,13 @@ async function dataAddToInMemoryCache(
 ) {
   // HACK to support int testing
 
-  if (executioncontext) {
-    context.executioncontext.waitUntil(
-      addToInMemoryCache(context, cacheKey, { data, source: 'cache', total })
-    );
-  } else {
-    return addToInMemoryCache(context, cacheKey, { data, source: 'cache', total });
-  }
+//   if (executioncontext) {
+//     context.executioncontext.waitUntil(
+//       addToInMemoryCache(context, cacheKey, { data, source: 'cache', total })
+//     );
+//   } else {
+//     return addToInMemoryCache(context, cacheKey, { data, source: 'cache', total });
+//   }
 }
 
 export async function insertRecord(d1, kv, data) {
@@ -293,7 +257,7 @@ export async function insertRecord(d1, kv, data) {
   // console.log("insertRecord", content);
   let result = {};
   try {
-    result = await saveKVData(kv, id, content.data);
+    // result = await saveKVData(kv, id, content.data);
     // console.log('result KV', result);
     // return context.json(id, 201);
   } catch (error) {
@@ -305,8 +269,8 @@ export async function insertRecord(d1, kv, data) {
       result = await insertD1Data(d1, kv, content.table, content.data);
       // console.log("insertD1Data --->", result);
       //expire cache
-      await setCacheStatusInvalid();
-      await clearKVCache(kv);
+    //   await setCacheStatusInvalid();
+    //   await clearKVCache(kv);
 
       return { code: 201, data: result };
     } catch (error) {
@@ -323,13 +287,12 @@ export async function insertRecord(d1, kv, data) {
 export async function updateRecord(d1, kv, data, params: Record<string, any>) {
   try {
     const result = await updateD1Data(d1, data.table, data, params);
-    console.log('WTF WTF');
     if ('id' in result && result.id) {
-      await saveKVData(kv, data.id, data);
+    //   await saveKVData(kv, data.id, data);
     }
     //expire cache
-    await setCacheStatusInvalid();
-    await clearKVCache(kv);
+    // await setCacheStatusInvalid();
+    // await clearKVCache(kv);
     return { code: 200, data: result };
   } catch (error) {
     console.log('error posting content', error);
@@ -339,8 +302,8 @@ export async function updateRecord(d1, kv, data, params: Record<string, any>) {
     try {
       const result = await updateD1Data(d1, data.table, data);
       //expire cache
-      await setCacheStatusInvalid();
-      await clearKVCache(kv);
+    //   await setCacheStatusInvalid();
+    //   await clearKVCache(kv);
       return { code: 200, data: result };
     } catch (error) {
       console.log('error posting content', error);
@@ -352,11 +315,11 @@ export async function deleteRecord(d1, kv, data) {
   const timestamp = new Date().getTime();
 
   try {
-    const kvResult = await deleteKVById(kv, data.id);
+    // const kvResult = await deleteKVById(kv, data.id);
     const d1Result = await deleteD1ByTableAndId(d1, data.table, data.id);
 
-    await setCacheStatusInvalid();
-    await clearKVCache(kv);
+    // await setCacheStatusInvalid();
+    // await clearKVCache(kv);
   } catch (error) {
     console.log('error deleting content', error);
     return { code: 500, message: error };
