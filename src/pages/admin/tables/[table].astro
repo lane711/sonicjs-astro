@@ -1,0 +1,12 @@
+---
+const { table } = Astro.params;
+import AdminLayout from '../layouts/admin-layout.astro'
+import Table from '../layouts/table.astro'
+
+
+---
+<AdminLayout title="{table} | SonicJs Admin">
+
+<h1>table: {table}</h1>
+<Table table="{table}"></Table>
+</AdminLayout>

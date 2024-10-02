@@ -1,30 +1,19 @@
 ---
-// import { desc } from "drizzle-orm";
-// import { drizzle } from "drizzle-orm/d1";
-// import { linkShare } from "../db/schema";
-const data = Astro.locals;
-data.user = {};
+const { table } = Astro.params;
 
-import AdminLayout from './layouts/admin-layout.astro'
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
-
-// const { env } = Astro.locals.runtime;
-// const db = drizzle(env.D1);
-
-// const links = await db
-//   .select()
-//   .from(linkShare)
-//   .orderBy(desc(linkShare.created));
+sleep(3000)
 ---
-
-<AdminLayout title="SonicJs Admin">
-  <div class="bg-gray-900">
+<div class="bg-gray-900">
     <div class="mx-auto max-w-7xl">
       <div class="bg-gray-900 py-10">
         <div class="px-4 sm:px-6 lg:px-8">
           <div class="sm:flex sm:items-center">
             <div class="sm:flex-auto">
-              <h1 class="text-base font-semibold leading-6 text-white">Users</h1>
+              <h1 class="text-base font-semibold leading-6 text-white">{table}</h1>
               <p class="mt-2 text-sm text-gray-300">A list of all the users in your account including their name, title, email and role.</p>
             </div>
             <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
@@ -67,5 +56,3 @@ import AdminLayout from './layouts/admin-layout.astro'
       </div>
     </div>
   </div>
-
-</AdminLayout>
