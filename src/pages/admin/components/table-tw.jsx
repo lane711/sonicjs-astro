@@ -1,19 +1,15 @@
----
-const { table } = Astro.params;
-
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-sleep(3000)
----
-<div class="bg-gray-900">
+const Table = ({table}) => {
+  // alert('lane');
+  console.log('tbale react')
+  debugger;
+  return (
+    <div class="bg-gray-900">
     <div class="mx-auto max-w-7xl">
       <div class="bg-gray-900 py-10">
         <div class="px-4 sm:px-6 lg:px-8">
           <div class="sm:flex sm:items-center">
             <div class="sm:flex-auto">
-              <h1 class="text-base font-semibold leading-6 text-white">{table}</h1>
+              <h1 class="text-base font-semibold leading-6 text-white">REACT {table}</h1>
               <p class="mt-2 text-sm text-gray-300">A list of all the users in your account including their name, title, email and role.</p>
             </div>
             <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
@@ -46,7 +42,6 @@ sleep(3000)
                       </td>
                     </tr>
   
-                    <!-- More people... -->
                   </tbody>
                 </table>
               </div>
@@ -56,3 +51,7 @@ sleep(3000)
       </div>
     </div>
   </div>
+  )
+};
+
+export default Table;
