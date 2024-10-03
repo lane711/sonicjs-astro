@@ -56,7 +56,6 @@ function Table({ tableName }) {
     if (originPath) {
       fetch(`${originPath}`).then(async (response) => {
         const {data} = await response.json();
-        console.log(data.data)
         setData(data.data);
         setLoading(false);
       });

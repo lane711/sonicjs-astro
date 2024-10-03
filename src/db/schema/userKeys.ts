@@ -4,6 +4,7 @@ import { auditSchema } from './audit';
 import * as users from './users';
 
 export const tableName = 'user_keys';
+export const name = 'User Keys'
 
 export const definition = {
   id: text('id').primaryKey(),

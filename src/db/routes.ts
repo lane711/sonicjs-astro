@@ -18,6 +18,8 @@ export type SonicJSFilter = Record<string, any>;
 export interface ApiConfig {
   table: string;
   route: string;
+  name: string;
+  icon: string;
   // Access control if auth is enabled
   // ctx: HonoContext, contains all the information about the request
   // id: the id of the document the operation is being performed on, could be undefined if reading multiple rows
@@ -210,7 +212,9 @@ for (const key of Object.keys(tableSchemas)) {
       route: table.route,
       access: table.access,
       hooks: table.hooks,
-      fields: table.fields
+      fields: table.fields,
+      name: table.name,
+      icon: table.icon
     });
   }
 }
