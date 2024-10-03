@@ -1,10 +1,10 @@
-// import * as users from './schema/users';
-// import * as posts from './schema/posts';
-// import * as comments from './schema/comments';
+import * as users from './schema/users';
+import * as posts from './schema/posts';
+import * as comments from './schema/comments';
 import * as categories from './schema/categories';
-// import * as categoriesToPosts from './schema/categoriesToPosts';
-// import * as userKeys from './schema/userKeys';
-// import * as userSessions from './schema/userSessions';
+import * as categoriesToPosts from './schema/categoriesToPosts';
+import * as userKeys from './schema/userKeys';
+import * as userSessions from './schema/userSessions';
 
 // import { AppContext } from '../server';
 import { isAdminOrEditor } from './config-helpers';
@@ -193,13 +193,13 @@ export interface ApiConfig {
 export const apiConfig: ApiConfig[] = [];
 
 export const tableSchemas = {
-  // users,
-  // posts,
-  // comments,
+  users,
+  posts,
+  comments,
   categories,
-  // categoriesToPosts,
-  // userKeys,
-  // userSessions
+  categoriesToPosts,
+  userKeys,
+  userSessions
 };
 
 for (const key of Object.keys(tableSchemas)) {
