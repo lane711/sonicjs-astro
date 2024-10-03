@@ -7,7 +7,11 @@ export const prerender = true;
 const { title } = Astro.props;
 
 const tables = apiConfig.filter((t) => t.route !== 'users')
-;
+import SonicJsLogo from '../../../../public/images/sonicjs-logo.svg';
+import { Picture } from "astro:assets";
+import { Image } from 'astro:assets';
+
+
 ---
 
 <html lang="en" class="h-full bg-gray-900"></html>
@@ -16,7 +20,9 @@ const tables = apiConfig.filter((t) => t.route !== 'users')
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
   <title>{title}</title>
-  <link rel="stylesheet" href="style.css" />
+  <!-- <link rel="stylesheet" href="style.css" /> -->
+  <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+
 </head>
 <body class="h-full">
   <div>
@@ -356,11 +362,9 @@ const tables = apiConfig.filter((t) => t.route !== 'users')
         class="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-4 border-e border-gray-800"
       >
         <div class="flex h-16 shrink-0 items-center">
-          <img
-            class="h-8 w-auto"
-            src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=500"
-            alt="Your Company"
-          />
+          <a href="/admin" class="p-0 m-0"> 
+         <Image  src={SonicJsLogo} format="svg" alt="Logo" height={26} loading="lazy" />
+        </a>
         </div>
         <nav class="flex flex-1 flex-col">
           <div class="text-xs font-semibold leading-6 text-gray-400">
