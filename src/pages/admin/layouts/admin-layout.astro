@@ -367,13 +367,14 @@ import { Image } from 'astro:assets';
         </a>
         </div>
         <nav class="flex flex-1 flex-col">
-          <div class="text-xs font-semibold leading-6 text-gray-400">
-            Schema Management
-          </div>
+
           <ul role="list" class="flex flex-1 flex-col gap-y-7">
+         
             <li>
-              <ul role="list" class="-mx-2 space-y-1">
-              
+              <div class="text-xs font-semibold leading-6 text-gray-400">
+                Schemas
+              </div>
+              <ul role="list" class="-mx-2 mt-2 space-y-1">              
                 {
                   tables.map((item: ApiConfig) => {
                     console.log("item", item);
@@ -404,7 +405,7 @@ import { Image } from 'astro:assets';
             </li>
             <li>
               <div class="text-xs font-semibold leading-6 text-gray-400">
-                User Management
+                Users
               </div>
               <ul role="list" class="-mx-2 mt-2 space-y-1">
                 <li>
@@ -449,7 +450,7 @@ import { Image } from 'astro:assets';
 
             <li>
               <div class="text-xs font-semibold leading-6 text-gray-400">
-                Cache Management
+                Cache
               </div>
               <ul role="list" class="-mx-2 mt-2 space-y-1">
                 <li>
