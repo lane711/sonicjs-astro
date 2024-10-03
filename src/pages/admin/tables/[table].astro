@@ -1,10 +1,15 @@
 ---
-const { table } = Astro.params;
+// import { apiConfig } from "../../../db/routes";
 import AdminLayout from "../layouts/admin-layout.astro";
 import Table from "../components/table";
+
+const { table } = Astro.params;
+// const tableConfig = apiConfig.find((t) => t.route === table)
+
+
 ---
 
-<AdminLayout title="{table} | SonicJs Admin">
-  <h1>table: {table}</h1>
+<AdminLayout title=`SonicJs Admin` | ${table} `>
+  <!-- <h1>table: {table}</h1> -->
   <Table client:load  tableName={table} />
 </AdminLayout>
