@@ -17,6 +17,7 @@ export type SonicJSConfig = {
 export type SonicJSFilter = Record<string, any>;
 export interface ApiConfig {
   table: string;
+  definition:string;
   route: string;
   name: string;
   icon: string;
@@ -209,6 +210,7 @@ for (const key of Object.keys(tableSchemas)) {
   if (table.route) {
     apiConfig.push({
       table: table.tableName,
+      definition: table.definition,
       route: table.route,
       access: table.access,
       hooks: table.hooks,
