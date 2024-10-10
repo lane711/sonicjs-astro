@@ -5,11 +5,9 @@ import Table from "../components/table";
 
 const { table } = Astro.params;
 // const tableConfig = apiConfig.find((t) => t.route === table)
-
-
 ---
 
-<AdminLayout title=`SonicJs Admin` | ${table} `>
+<AdminLayout title=`SonicJs Admin` | {table} `>
   <!-- <h1>table: {table}</h1> -->
-  <Table client:load  tableName={table} />
+  <Table client:load tableName={table} />
 </AdminLayout>
