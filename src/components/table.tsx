@@ -3,8 +3,11 @@ import {
   createColumnHelper,
   flexRender,
   getCoreRowModel,
+  type SortingState,
+  getSortedRowModel,
+  type ColumnDef,
 } from "@tanstack/react-table";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 const columnHelper = createColumnHelper();
 
@@ -15,33 +18,51 @@ const fallbackData = [
   },
 ];
 
-const columns = [
+function Table({ tableConfig }) {
+  // debugger;
+  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(0);
+  const [data, setData] = useState(null);
+  const [sorting, setSorting] = useState<SortingState>([]) // can set initial sorting state here
+
+  const pageSize = 18;
+
+  const columns = Object.entries(tableConfig.fields).map(([key, value]) =>
+    columnHelper.accessor(key, {
+      header: value.header || key.charAt(0).toUpperCase() + key.slice(1),
+    })
+  );
+
+  // console.log("columns", columns);
   // columnHelper.accessor((row) => `${row.firstName} ${row.surname}`, {
   //   id: "fullName",
   //   header: "Full Name",
   // }),
-  columnHelper.accessor("id", {
-    header: "Id",
-  }),
-  columnHelper.accessor("title", {
-    header: "Title",
-  }),
-  columnHelper.accessor("updated_on", {
-    header: "Last Updated",
-  }),
-];
+  //   columnHelper.accessor("id", {
+  //     header: "Id",
+  //   }),
+  //   columnHelper.accessor("title", {
+  //     header: "Title 2",
+  //   }),
+  //   columnHelper.accessor("updated_on", {
+  //     header: "Last Updated",
+  //   }),
+  // ];
 
-function Table({ tableName }) {
-  const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(0);
-  const [data, setData] = useState(null);
 
-  const pageSize = 18;
+
 
   const table = useReactTable({
     data: data ?? fallbackData,
     columns,
+    debugTable: true,
     getCoreRowModel: getCoreRowModel(),
+    state: {
+      sorting,
+    },
+    onSortingChange: setSorting,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(), 
   });
 
   useEffect(() => {
@@ -50,7 +71,7 @@ function Table({ tableName }) {
 
     const offset = page * pageSize;
 
-    const originPath = `/api/v1/${tableName}?limit=${pageSize}&offset=${offset}`;
+    const originPath = `/api/v1/${tableConfig.route}?limit=${pageSize}&offset=${offset}`;
 
     getData(originPath);
   }, []);
@@ -66,9 +87,11 @@ function Table({ tableName }) {
   };
 
   if (table) {
+    console.log('sorting', table.getState().sorting)
+
     return (
       <div className="bg-gray-900">
-        <div className="mx-auto max-w-7xl">
+        <div className="mx-auto">
           <div className="bg-gray-900 py-10">
             <div className="px-4 sm:px-6 lg:px-8">
               <div className="sm:flex sm:items-center">
@@ -82,33 +105,55 @@ function Table({ tableName }) {
                   </p>
                 </div>
                 <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-                  <a href={`/admin/forms/${tableName}`}
+                  <a
+                    href={`/admin/forms/${tableConfig.route}`}
                     type="button"
                     className="block rounded-md bg-indigo-500 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
                   >
-                    Add {tableName}
+                    Add {tableConfig.name}
                   </a>
                 </div>
               </div>
               <div className="mt-8 flow-root">
                 <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                   <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-                    <table>
+                    <table className="min-w-full divide-y divide-gray-700">
                       <thead>
                         {table.getHeaderGroups().map((headerGroup) => {
                           return (
                             <tr key={headerGroup.id}>
                               {headerGroup.headers.map((header) => {
                                 return (
-                                  <th id={header.id}>
-                                    {" "}
-                                    {header.isPlaceholder
-                                      ? null
-                                      : flexRender(
-                                          header.column.columnDef.header,
-                                          header.getContext()
-                                        )}
-                                  </th>
+                                  <th key={header.id} colSpan={header.colSpan}>
+                                  {header.isPlaceholder ? null : (
+                                    <div
+                                      className={
+                                        header.column.getCanSort()
+                                          ? 'cursor-pointer select-none'
+                                          : ''
+                                      }
+                                      onClick={header.column.getToggleSortingHandler()}
+                                      title={
+                                        header.column.getCanSort()
+                                          ? header.column.getNextSortingOrder() === 'asc'
+                                            ? 'Sort ascending'
+                                            : header.column.getNextSortingOrder() === 'desc'
+                                              ? 'Sort descending'
+                                              : 'Clear sort'
+                                          : undefined
+                                      }
+                                    >
+                                      {flexRender(
+                                        header.column.columnDef.header,
+                                        header.getContext()
+                                      )}
+                                      {{
+                                        asc: ' 🔼',
+                                        desc: ' 🔽',
+                                      }[header.column.getIsSorted() as string] ?? null}
+                                    </div>
+                                  )}
+                                </th>
                                 );
                               })}
                             </tr>
@@ -121,7 +166,10 @@ function Table({ tableName }) {
                             <tr key={row.id}>
                               {row.getVisibleCells().map((cell) => {
                                 return (
-                                  <td key={cell.id}>
+                                  <td
+                                    key={cell.id}
+                                    className="whitespace-nowrap px-3 py-4 text-sm text-gray-300"
+                                  >
                                     {flexRender(
                                       cell.column.columnDef.cell,
                                       cell.getContext()
@@ -129,13 +177,29 @@ function Table({ tableName }) {
                                   </td>
                                 );
                               })}
+                              <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
+                                <a
+                                  href="#"
+                                  className="text-indigo-400 hover:text-indigo-300"
+                                >
+                                  Edit
+                                </a>
+                              </td>
+                              <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
+                                <a
+                                  href="#"
+                                  className="text-indigo-400 hover:text-indigo-300"
+                                >
+                                  Delete
+                                </a>
+                              </td>
                             </tr>
                           );
                         })}
                       </tbody>
                     </table>
 
-                    <table className="min-w-full divide-y divide-gray-700">
+                    <table className="min-w-full divide-y divide-gray-700 mt-20">
                       <thead>
                         <tr>
                           <th

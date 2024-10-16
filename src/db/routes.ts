@@ -1,13 +1,13 @@
-import * as users from './schema/users';
-import * as posts from './schema/posts';
-import * as comments from './schema/comments';
-import * as categories from './schema/categories';
-import * as categoriesToPosts from './schema/categoriesToPosts';
-import * as userKeys from './schema/userKeys';
-import * as userSessions from './schema/userSessions';
+import * as users from "./schema/users";
+import * as posts from "./schema/posts";
+import * as comments from "./schema/comments";
+import * as categories from "./schema/categories";
+import * as categoriesToPosts from "./schema/categoriesToPosts";
+import * as userKeys from "./schema/userKeys";
+import * as userSessions from "./schema/userSessions";
 
 // import { AppContext } from '../server';
-import { isAdminOrEditor } from './config-helpers';
+import { isAdminOrEditor } from "./config-helpers";
 import type { APIContext as AppContext } from "astro";
 
 export type SonicJSConfig = {
@@ -17,7 +17,7 @@ export type SonicJSConfig = {
 export type SonicJSFilter = Record<string, any>;
 export interface ApiConfig {
   table: string;
-  definition:string;
+  definition: string;
   route: string;
   name: string;
   icon: string;
@@ -159,13 +159,13 @@ export interface ApiConfig {
     };
     beforeOperation?: (
       ctx: AppContext,
-      operation: 'create' | 'read' | 'update' | 'delete',
+      operation: "create" | "read" | "update" | "delete",
       id?: string,
       data?: any
     ) => void | Promise<void>;
     afterOperation?: (
       ctx: AppContext,
-      operation: 'create' | 'read' | 'update' | 'delete',
+      operation: "create" | "read" | "update" | "delete",
       id?: string,
       data?: any,
       result?: { data?: any } & Record<string, any>
@@ -174,21 +174,27 @@ export interface ApiConfig {
   fields?: {
     [field: string]:
       | {
-          type: 'auto' | 'string[]';
+          type: "id" | "string[]";
         }
       | {
-          type: 'file' | 'file[]';
+          type: "auto" | "string[]";
+        }
+      | {
+          type: "file" | "file[]";
           bucket: (ctx: AppContext) => R2Bucket;
           path?: string | ((ctx: AppContext) => string);
         }
       | {
-          type: 'password';
+          type: "password";
         }
       | {
-          type: 'ckeditor';
+          type: "ckeditor";
         }
       | {
-          type: 'quill';
+          type: "quill";
+        }
+      | {
+          type: "datetime";
         };
   };
 }
@@ -202,7 +208,7 @@ export const tableSchemas = {
   categories,
   categoriesToPosts,
   userKeys,
-  userSessions
+  userSessions,
 };
 
 for (const key of Object.keys(tableSchemas)) {
@@ -216,17 +222,17 @@ for (const key of Object.keys(tableSchemas)) {
       hooks: table.hooks,
       fields: table.fields,
       name: table.name,
-      icon: table.icon
+      icon: table.icon,
     });
   }
 }
 
 export const config: SonicJSConfig = {
   apiConfig: apiConfig,
-  adminAccessControl: isAdminOrEditor
+  adminAccessControl: isAdminOrEditor,
 };
 
 export const sonicJsConfig: SonicJSConfig = {
   apiConfig: apiConfig,
-  adminAccessControl: isAdminOrEditor
+  adminAccessControl: isAdminOrEditor,
 };

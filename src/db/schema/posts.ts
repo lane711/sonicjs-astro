@@ -110,6 +110,15 @@ export const hooks: ApiConfig["hooks"] = {
 };
 
 export const fields: ApiConfig["fields"] = {
+  id: {
+    type: "id",
+  },
+  title: {
+    type: "auto",
+  },
+  body: {
+    type: "ckeditor",
+  },
   image: {
     type: "file",
     bucket: (ctx) => ctx.env.R2STORAGE,
@@ -125,5 +134,8 @@ export const fields: ApiConfig["fields"] = {
   },
   body: {
     type: "ckeditor",
+  },
+  updatedOn: {
+    type: "datetime",
   },
 };
