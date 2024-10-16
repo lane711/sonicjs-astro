@@ -110,9 +110,9 @@ export const hooks: ApiConfig["hooks"] = {
 };
 
 export const fields: ApiConfig["fields"] = {
-  id: {
-    type: "id",
-  },
+  // id: {
+  //   type: "id",
+  // },
   title: {
     type: "auto",
   },
