@@ -1,35 +1,28 @@
 ---
 import { apiConfig } from "../../../db/routes";
+import { getFieldDefinitions } from "../../../services/fields";
 import AdminLayout from "../layouts/admin-layout.astro";
 
 const { form } = Astro.params;
-const tableConfig = apiConfig.find((t) => t.route === form);
+const tableConfigRecord = apiConfig.find((t) => t.route === form);
 
-const definitionObject = tableConfig.definition;
+// const definitionObject = tableConfig.definition;
 
-// Convert the nested objects to an array
-const definitionArray = Object.values(definitionObject);
+// // Convert the nested objects to an array
+// const definitionArray = Object.values(definitionObject);
 
-// console.log(definitionArray);
+// const fields = Object.entries(tableConfig.fields);
 
-// const definition = [tableConfig.definition];
-// var definitionArray = Object.values(tableConfig.definition)
-
-const fields = Object.entries(tableConfig.fields);
-
-// console.log("definition", fields);
-
-const formFields = definitionArray.map((field) => {
-  const key = field.config.name;
-  const fieldOverride = tableConfig.fields[key];
-  // const fieldOverride = fields.find((f) => f[0] === key);
-  if (fieldOverride) {
-    return { key, type: fieldOverride };
-  } else {
-    return { key, type: "textField" };
-  }
-});
-// console.log(formFields);
+// const formFields = definitionArray.map((field) => {
+//   const key = field.config.name;
+//   const fieldOverride = tableConfig.fields[key];
+//   if (fieldOverride) {
+//     return { key, type: fieldOverride };
+//   } else {
+//     return { key, type: "textField" };
+//   }
+// });
+const tableConfig = getFieldDefinitions(tableConfigRecord);
 
 if (Astro.request.method === "POST") {
   try {
@@ -104,7 +97,7 @@ if (Astro.request.method === "POST") {
 
         <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
           {
-            formFields.map((field) => (
+            tableConfig.formFields.map((field) => (
               // <div>
               //   <label for={field.name}>{field.label}</label>
               //   <input type="text" id={field.name} name={field.name} />

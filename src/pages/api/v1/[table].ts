@@ -20,7 +20,7 @@ export const GET: APIRoute = async (context) => {
   const tableName = params.table;
   let entry;
   try {
-    entry = apiConfig.filter((tbl) => tbl.table === tableName)[0];
+    entry = apiConfig.filter((tbl) => tbl.route === tableName)[0];
   } catch (error) {
     return new Response(
       JSON.stringify({

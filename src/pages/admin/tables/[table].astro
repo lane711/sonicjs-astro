@@ -2,9 +2,12 @@
 import { apiConfig } from "../../../db/routes";
 import AdminLayout from "../layouts/admin-layout.astro";
 import Table from "../../../components/table";
+import { getFieldDefinitions } from "../../../services/fields";
 
 const { table } = Astro.params;
-const tableConfig = apiConfig.find((t) => t.route === table);
+const tableConfigRecord = apiConfig.find((t) => t.route === table);
+const tableConfig = getFieldDefinitions(tableConfigRecord);
+
 ---
 
 <AdminLayout title=`SonicJs Admin` | {table} `>
