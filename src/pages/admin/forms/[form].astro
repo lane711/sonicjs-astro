@@ -44,9 +44,10 @@ if (Astro.request.method === "POST") {
     //now post to our own post api
     // const email = data.get("email");
     // const password = data.get("password");
-
+    const baseURl = Astro.request.url.split("/admin/")[0];
+    const postUrl = `${baseURl}/api/v1/${tableConfigRecord.route}`;
     try {
-      const response = await fetch("http://localhost:4321/api/v1/posts", {
+      const response = await fetch(postUrl, {
         method: "POST",
         body: json,
       });
