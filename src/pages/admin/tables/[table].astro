@@ -3,6 +3,7 @@ import { apiConfig } from "../../../db/routes";
 import AdminLayout from "../layouts/admin-layout.astro";
 import Table from "../../../components/table";
 import { getFieldDefinitions } from "../../../services/fields";
+import DeleteConfirmation from "../../../components/delete-confirmation";
 
 const { table } = Astro.params;
 const tableConfigRecord = apiConfig.find((t) => t.route === table);

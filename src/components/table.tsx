@@ -10,6 +10,7 @@ import {
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/20/solid";
 
 import { useEffect, useMemo, useState } from "react";
+import DeleteConfirmation from "./delete-confirmation";
 
 const columnHelper = createColumnHelper();
 
@@ -26,6 +27,9 @@ function Table({ tableConfig }) {
   const [page, setPage] = useState(0);
   const [data, setData] = useState(null);
   const [sorting, setSorting] = useState<SortingState>([]); // can set initial sorting state here
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [recordToDelete, setRecordToDelete] = useState(false);
 
   const pageSize = 18;
 
@@ -41,6 +45,11 @@ function Table({ tableConfig }) {
       cell: (info) => truncateText(info.getValue(), 30),
     });
   });
+
+  const handleDeleteClick = (id) => {
+    setRecordToDelete(id);
+    setShowDeleteConfirmation(true);
+  };
 
   console.log("columns-->", columns);
 
@@ -91,6 +100,14 @@ function Table({ tableConfig }) {
     getData(originPath);
   }, []);
 
+  useEffect(() => {
+    if (confirmDelete) {
+      deleteData(recordToDelete);
+      console.log("record deleted");
+      setConfirmDelete(false);
+    }
+  }, [confirmDelete]);
+
   const getData = (originPath) => {
     if (originPath) {
       fetch(`${originPath}`).then(async (response) => {
@@ -101,11 +118,34 @@ function Table({ tableConfig }) {
     }
   };
 
+  const deleteData = (id) => {
+    if (id) {
+      const path = `/api/v1/${tableConfig.route}/${id}`;
+
+      // const path = `/api/v1/${tableConfig.route}`;
+
+      fetch(path, {
+        method: "DELETE",
+      })
+        .then((res) => res.text()) // or res.json()
+        .then((res) => console.log(res));
+      console.log("delete record with id", id);
+    }
+  };
+
   if (table) {
     console.log("sorting", table.getState().sorting);
 
     return (
       <div className="bg-gray-900">
+        {showDeleteConfirmation && (
+          <DeleteConfirmation
+            open={showDeleteConfirmation}
+            setOpen={setShowDeleteConfirmation}
+            setConfirmDelete={setConfirmDelete}
+          />
+        )}
+
         <div className="mx-auto">
           <div className="bg-gray-900 py-10">
             <div className="px-4 sm:px-6 lg:px-8">
@@ -226,12 +266,14 @@ function Table({ tableConfig }) {
                                 </a>
                               </td>
                               <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                                <a
-                                  href="#"
+                                <button
+                                  onClick={() =>
+                                    handleDeleteClick(row.getValue("id"))
+                                  }
                                   className="text-indigo-400 hover:text-indigo-300"
                                 >
                                   Delete
-                                </a>
+                                </button>
                               </td>
                             </tr>
                           );
