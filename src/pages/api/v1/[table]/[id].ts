@@ -11,8 +11,11 @@ import { apiConfig, sonicJsConfig } from "../../../../db/routes";
 //   getItemReadResult,
 //   getOperationCreateResult,
 // } from "../../../auth/auth-helpers";
-import { deleteRecord, getRecords, insertRecord } from "../../../../services/data";
-
+import {
+  deleteRecord,
+  getRecords,
+  insertRecord,
+} from "../../../../services/data";
 
 export const DELETE: APIRoute = async (context) => {
   const params = context.params;
@@ -166,12 +169,7 @@ const return201 = (message = "Record Created") => {
 };
 
 const return204 = (message = "Record Deleted") => {
-  return new Response(
-    JSON.stringify({
-      message,
-    }),
-    { status: 204 }
-  );
+  return new Response(null, { status: 204 });
 };
 
 const return400 = (message = "Unauthorized") => {

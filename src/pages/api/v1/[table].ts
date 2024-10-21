@@ -363,7 +363,7 @@ const return204 = (message = "Record Deleted") => {
     JSON.stringify({
       message,
     }),
-    { status: 204 }
+    { status: 201 }
   );
 };
 
