@@ -12,6 +12,7 @@ import {
   getOperationCreateResult,
 } from "../../../auth/auth-helpers";
 import { deleteRecord, getRecords, insertRecord } from "../../../services/data";
+import { return204, return400, return404, return500 } from "../../../services/return-types";
 
 export const GET: APIRoute = async (context) => {
   const start = Date.now();
@@ -349,47 +350,4 @@ export const DELETE: APIRoute = async (context) => {
 //   });
 // });
 
-const return201 = (message = "Record Created") => {
-  return new Response(
-    JSON.stringify({
-      message,
-    }),
-    { status: 201 }
-  );
-};
 
-const return204 = (message = "Record Deleted") => {
-  return new Response(
-    JSON.stringify({
-      message,
-    }),
-    { status: 201 }
-  );
-};
-
-const return400 = (message = "Unauthorized") => {
-  return new Response(
-    JSON.stringify({
-      message,
-    }),
-    { status: 400 }
-  );
-};
-
-const return404 = (message = "Not Found") => {
-  return new Response(
-    JSON.stringify({
-      message,
-    }),
-    { status: 404 }
-  );
-};
-
-const return500 = (message = "Internal Server Error") => {
-  return new Response(
-    JSON.stringify({
-      message,
-    }),
-    { status: 500 }
-  );
-};

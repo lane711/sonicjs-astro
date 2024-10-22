@@ -1,0 +1,35 @@
+---
+import AdminLayout from "../../layouts/admin-layout.astro";
+import FormComponent from "../form-component.astro";
+import { apiConfig } from "../../../../db/routes";
+const { form, id } = Astro.params;
+import { getFieldDefinitions } from "../../../../services/fields";
+
+const tableConfigRecord = apiConfig.find((t) => t.route === form);
+const tableConfig = getFieldDefinitions(tableConfigRecord);
+
+//get existing record
+const getRecord = async (table, id) => {
+  const baseURl = Astro.request.url.split("/admin/")[0];
+  const getUrl = `${baseURl}/api/v1/${tableConfigRecord.route}/${id}`;
+  let result;
+  try {
+    result = await fetch(getUrl).then((response) => response.json());
+
+    console.log("Success:", result);
+    return result.data;
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
+
+const record = await getRecord(tableConfigRecord.route, id);
+
+console.log("record-->", record);
+
+const formWithData = { ...tableConfig, record };
+---
+
+<AdminLayout title=`SonicJs Admin` | {form} `>
+  <FormComponent form="{form}" />
+</AdminLayout>

@@ -16,6 +16,97 @@ import {
   getRecords,
   insertRecord,
 } from "../../../../services/data";
+import { getApiAccessControlResult } from "../../../../auth/auth-helpers";
+import { return200 } from "../../../../services/return-types";
+
+
+  //get single record
+  export const GET = async (context) => {
+    
+
+    // const start = Date.now();
+    const params = context.params;
+
+    const tableName = params.table;
+    let entry;
+    try {
+      entry = apiConfig.filter((tbl) => tbl.route === tableName)[0];
+    } catch (error) {
+      return new Response(
+        JSON.stringify({
+          error: `Table "${tableName}" not defined in your schema`,
+        }),
+        { status: 500 }
+      );
+    }
+
+    // let { includeContentType, source, ...params } =  context.request.query();
+
+    const id = params.id;
+
+    if (entry.hooks?.beforeOperation) {
+      await entry.hooks.beforeOperation(context, 'read', id);
+    }
+
+    // params.id = id;
+    // will check the item result when we get the data
+    const accessControlResult = await getApiAccessControlResult(
+      entry?.access?.operation?.read || true,
+      entry?.access?.filter?.read || true,
+      true,
+      context,
+      id,
+      entry.table
+    );
+
+    if (typeof accessControlResult === 'object') {
+      params = { ...params, ...accessControlResult };
+    }
+
+    if (!accessControlResult) {
+      return context.text('Unauthorized', 401);
+    }
+
+    // source = source || 'fastest';
+    // if (includeContentType !== undefined) {
+    //   source = 'd1';
+    // }
+    const source = 'D1'
+
+    let data = await getRecords(
+      context,
+      entry.table,
+      params,
+       context.request.url,
+      source,
+      undefined
+    );
+
+    // if (entry.access?.item?.read) {
+    //   const accessControlResult = await getItemReadResult(
+    //     entry.access.item.read,
+    //     ctx,
+    //     data
+    //   );
+    //   if (!accessControlResult) {
+    //     return context.text('Unauthorized', 401);
+    //   }
+    // }
+    // data = await filterReadFieldAccess(entry.access?.fields, ctx, data);
+    // if (includeContentType !== undefined) {
+    //   data.contentType = getForm(ctx, entry.table);
+    // }
+
+    // if (entry.hooks?.afterOperation) {
+    //   await entry.hooks.afterOperation(ctx, 'read', id, null, data);
+    // }
+
+    // const end = Date.now();
+    // const executionTime = end - start;
+
+    return return200(data);
+  };
+
 
 export const DELETE: APIRoute = async (context) => {
   const params = context.params;
@@ -36,7 +127,7 @@ export const DELETE: APIRoute = async (context) => {
     );
   }
 
-  // ctx.env.D1DATA = ctx.env.D1DATA;
+  // context.env.D1DATA = context.env.D1DATA;
 
   // if (entry.hooks?.beforeOperation) {
   //   await entry.hooks.beforeOperation(ctx, 'delete', id);
@@ -56,7 +147,7 @@ export const DELETE: APIRoute = async (context) => {
   // }
 
   // if (!accessControlResult) {
-  //   return ctx.text('Unauthorized', 401);
+  //   return context.text('Unauthorized', 401);
   // }
   // params.id = id;
 
@@ -64,7 +155,7 @@ export const DELETE: APIRoute = async (context) => {
   //   ctx,
   //   table,
   //   params,
-  //   ctx.req.path,
+  //    context.request.path,
   //   source || 'fastest',
   //   undefined
   // );
@@ -73,7 +164,7 @@ export const DELETE: APIRoute = async (context) => {
     context,
     entry.table,
     { id: params.id },
-    context.request.url,
+     context.requestuest.url,
     "fastest",
     undefined
   );
@@ -94,107 +185,4 @@ export const DELETE: APIRoute = async (context) => {
     console.log("content not found");
     return return404();
   }
-};
-
-//   //delete
-//   api.delete(`/${entry.route}/:id`, async (ctx) => {
-//     const id = ctx.req.param('id');
-//     const table = ctx.req.path.split('/')[2];
-//     ctx.env.D1DATA = ctx.env.D1DATA;
-
-//     if (entry.hooks?.beforeOperation) {
-//       await entry.hooks.beforeOperation(ctx, 'delete', id);
-//     }
-
-//     let { includeContentType, source, ...params } = ctx.req.query();
-
-//     const accessControlResult = await getApiAccessControlResult(
-//       entry?.access?.operation?.delete || true,
-//       entry?.access?.filter?.delete || true,
-//       entry?.access?.item?.delete || true,
-//       ctx,
-//       id,
-//       entry.table
-//     );
-
-//     if (typeof accessControlResult === 'object') {
-//       params = { ...params, ...accessControlResult };
-//     }
-
-//     if (!accessControlResult) {
-//       return ctx.text('Unauthorized', 401);
-//     }
-//     params.id = id;
-
-//     const record = await getRecords(
-//       ctx,
-//       table,
-//       params,
-//       ctx.req.path,
-//       source || 'fastest',
-//       undefined
-//     );
-
-//     if (record) {
-//       console.log('content found, deleting...');
-//       const result = await deleteRecord(ctx.env.D1DATA, ctx.env.KVDATA, {
-//         id,
-//         table: table
-//       });
-//       if (entry?.hooks?.afterOperation) {
-//         await entry.hooks.afterOperation(ctx, 'delete', id, record, result);
-//       }
-//       // const kvDelete = await deleteKVById(ctx.env.KVDATA, id);
-//       // const d1Delete = await deleteD1ByTableAndId(
-//       //   ctx.env.D1DATA,
-//       //   content.data.table,
-//       //   content.data.id
-//       // );
-//       console.log('returning 204');
-//       return ctx.text('', 204);
-//     } else {
-//       console.log('content not found');
-//       return ctx.text('', 404);
-//     }
-//   });
-// });
-
-const return201 = (message = "Record Created") => {
-  return new Response(
-    JSON.stringify({
-      message,
-    }),
-    { status: 201 }
-  );
-};
-
-const return204 = (message = "Record Deleted") => {
-  return new Response(null, { status: 204 });
-};
-
-const return400 = (message = "Unauthorized") => {
-  return new Response(
-    JSON.stringify({
-      message,
-    }),
-    { status: 400 }
-  );
-};
-
-const return404 = (message = "Not Found") => {
-  return new Response(
-    JSON.stringify({
-      message,
-    }),
-    { status: 404 }
-  );
-};
-
-const return500 = (message = "Internal Server Error") => {
-  return new Response(
-    JSON.stringify({
-      message,
-    }),
-    { status: 500 }
-  );
 };
