@@ -27,7 +27,7 @@ const record = await getRecord(tableConfigRecord.route, id);
 
 
 
-if (Astro.request.method === "PUT") {
+if (Astro.request.method === "POST") {
   try {
     const formData = await Astro.request.formData();
     var object = {};
@@ -49,7 +49,7 @@ if (Astro.request.method === "PUT") {
     const postUrl = `${baseURl}/api/v1/${tableConfigRecord.route}`;
     try {
       const response = await fetch(postUrl, {
-        method: "POST",
+        method: "PUT",
         body: json,
       });
 
@@ -75,5 +75,5 @@ if (Astro.request.method === "PUT") {
 ---
 
 <AdminLayout title=`SonicJs Admin` | {form} `>
-  <FormComponent record={record.data} formMethod="put"/>
+  <FormComponent record={record.data}/>
 </AdminLayout>
