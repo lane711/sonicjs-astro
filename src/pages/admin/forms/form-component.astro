@@ -2,19 +2,18 @@
 import { apiConfig } from "../../../db/routes";
 import { getFieldDefinitions } from "../../../services/fields";
 
-const {record} = Astro.props
+const {record, formMethod} = Astro.props
 const { form } = Astro.params;
 const tableConfigRecord = apiConfig.find((t) => t.route === form);
 const tableConfig = getFieldDefinitions(tableConfigRecord, record);
 
 ---
-<h1>Form Component</h1>
 
-<form method="post">
+<form method={formMethod}>
     <div class="space-y-12 mx-auto max-w-7xl">
       <div class="border-b border-white/10 pb-12">
         <h2 class="text-base font-semibold leading-7 text-white">
-          New {tableConfigRecord.name}
+          Edit {tableConfigRecord.name}
         </h2>
 
         <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
