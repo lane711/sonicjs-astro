@@ -1,4 +1,4 @@
-export const getFieldDefinitions = (tableConfig) => {
+export const getFieldDefinitions = (tableConfig, record) => {
   const definitionObject = tableConfig.definition;
 
   // Convert the nested objects to an array
@@ -9,10 +9,12 @@ export const getFieldDefinitions = (tableConfig) => {
   const formFields = definitionArray.map((field) => {
     const key = field.config.name;
     const fieldOverride = tableConfig.fields ? tableConfig.fields[key] : null;
-    if (fieldOverride) {
-      return { key, type: fieldOverride };
+    const fieldType = fieldOverride ? fieldOverride : "textField";
+
+    if (record && record[key]) {
+      return { key, type: fieldType, value: record[key] };
     } else {
-      return { key, type: "textField" };
+      return { key, type: fieldType };
     }
   });
 

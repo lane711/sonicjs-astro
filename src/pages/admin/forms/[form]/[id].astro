@@ -6,7 +6,7 @@ const { form, id } = Astro.params;
 import { getFieldDefinitions } from "../../../../services/fields";
 
 const tableConfigRecord = apiConfig.find((t) => t.route === form);
-const tableConfig = getFieldDefinitions(tableConfigRecord);
+// const tableConfig = getFieldDefinitions(tableConfigRecord);
 
 //get existing record
 const getRecord = async (table, id) => {
@@ -27,9 +27,9 @@ const record = await getRecord(tableConfigRecord.route, id);
 
 console.log("record-->", record);
 
-const formWithData = { ...tableConfig, record };
+// const formWithData = { ...tableConfig, record };
 ---
 
 <AdminLayout title=`SonicJs Admin` | {form} `>
-  <FormComponent form="{form}" />
+  <FormComponent record={record.data} something="test"/>
 </AdminLayout>
