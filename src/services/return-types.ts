@@ -34,6 +34,15 @@ export const return400 = (message = "Unauthorized") => {
   );
 };
 
+export const return401 = (message = "Unauthorized") => {
+  return new Response(
+    JSON.stringify({
+      message,
+    }),
+    { status: 401 }
+  );
+};
+
 export const return404 = (message = "Not Found") => {
   return new Response(
     JSON.stringify({
