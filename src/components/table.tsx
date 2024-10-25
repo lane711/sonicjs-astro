@@ -7,7 +7,11 @@ import {
   getSortedRowModel,
   type ColumnDef,
 } from "@tanstack/react-table";
-import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/20/solid";
+import {
+  ChevronDownIcon,
+  ChevronUpIcon,
+  PlusIcon,
+} from "@heroicons/react/20/solid";
 
 import { useEffect, useMemo, useState } from "react";
 import DeleteConfirmation from "./delete-confirmation";
@@ -42,7 +46,10 @@ function Table({ tableConfig }) {
   const columns = tableConfig.formFields.map((formField) => {
     return columnHelper.accessor(formField.key, {
       header: formField.key.charAt(0).toUpperCase() + formField.key.slice(1),
-      cell: (info) => truncateText(info.getValue(), 30),
+      cell: (info) =>
+        formField.key === "id"
+          ? truncateText(info.getValue(), 5)
+          : truncateText(info.getValue(), 30),
     });
   });
 
@@ -106,7 +113,7 @@ function Table({ tableConfig }) {
       console.log("record deleted");
       setConfirmDelete(false);
       //redirect to table
-      window.location.href= `/admin/tables/${tableConfig.route}`;
+      window.location.href = `/admin/tables/${tableConfig.route}`;
     }
   }, [confirmDelete]);
 
@@ -158,13 +165,15 @@ function Table({ tableConfig }) {
                   </h1>
                 </div>
                 <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-                  <a
-                    href={`/admin/forms/${tableConfig.route}`}
+                  <button
                     type="button"
-                    className="block rounded-md bg-indigo-500 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+                    className="rounded-full bg-indigo-600 p-2 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    onClick={() => {
+                      window.location.href = `/admin/forms/${tableConfig.route}`;
+                    }}
                   >
-                    Add {tableConfig.name}
-                  </a>
+                    <PlusIcon aria-hidden="true" className="h-5 w-5" />
+                  </button>
                 </div>
               </div>
               <div className="mt-8 flow-root">
@@ -262,7 +271,6 @@ function Table({ tableConfig }) {
                               <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
                                 <a
                                   href={`/admin/forms/${tableConfig.route}/${row.getValue("id")}`}
-                                
                                   className="text-indigo-400 hover:text-indigo-300"
                                 >
                                   Edit
