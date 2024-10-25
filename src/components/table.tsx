@@ -105,6 +105,8 @@ function Table({ tableConfig }) {
       deleteData(recordToDelete);
       console.log("record deleted");
       setConfirmDelete(false);
+      //redirect to table
+      window.location.href= `/admin/tables/${tableConfig.route}`;
     }
   }, [confirmDelete]);
 

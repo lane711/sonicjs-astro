@@ -23,7 +23,9 @@ import {
 } from "../../../../auth/auth-helpers";
 import {
   return200,
+  return204,
   return401,
+  return404,
   return500,
 } from "../../../../services/return-types";
 
@@ -253,7 +255,7 @@ export const DELETE: APIRoute = async (context) => {
     context,
     entry.table,
     { id: params.id },
-    context.requestuest.url,
+    context.request.url,
     "fastest",
     undefined
   );
