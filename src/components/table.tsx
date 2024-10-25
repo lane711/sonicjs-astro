@@ -261,7 +261,7 @@ function Table({ tableConfig }) {
                               })}
                               <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
                                 <a
-                                  href={"/admin/forms/posts/" + row.getValue("id")}
+                                  href={`/admin/forms/${tableConfig.route}/${row.getValue("id")}`}
                                 
                                   className="text-indigo-400 hover:text-indigo-300"
                                 >
