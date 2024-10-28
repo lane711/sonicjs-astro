@@ -15,6 +15,11 @@ import AdminLayout from './layouts/admin-layout.astro'
 //   .select()
 //   .from(linkShare)
 //   .orderBy(desc(linkShare.created));
+
+// auth
+import { getSession } from 'auth-astro/server';
+
+const session = await getSession(Astro.request);
 ---
 
 <AdminLayout title="SonicJs Admin">
@@ -25,6 +30,16 @@ import AdminLayout from './layouts/admin-layout.astro'
         <div class="px-4 sm:px-6 lg:px-8">
           <div class="sm:flex sm:items-center">
             <div class="sm:flex-auto">
+
+              {
+                session ? (
+                  <p>Welcome {session.user?.name}</p>
+                ) : (
+                  <p>Not logged in</p>
+                )
+              }
+
+              
               <h1 class="text-base font-semibold leading-6 text-white">Users</h1>
               <p class="mt-2 text-sm text-gray-300">A list of all the users in your account including their name, title, email and role.</p>
             </div>
