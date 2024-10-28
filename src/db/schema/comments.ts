@@ -76,4 +76,7 @@ export const fields: ApiConfig["fields"] = {
   tags: {
     type: "string[]",
   },
+  body:{ 
+    type:'textArea'
+  }
 };

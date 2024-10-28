@@ -177,6 +177,12 @@ export interface ApiConfig {
           type: "id" | "string[]";
         }
       | {
+          type: "textField";
+        }
+        | {
+          type: "textArea";
+        }
+      | {
           type: "auto" | "string[]";
         }
       | {

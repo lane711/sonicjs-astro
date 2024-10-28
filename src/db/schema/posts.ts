@@ -110,14 +110,14 @@ export const hooks: ApiConfig["hooks"] = {
 };
 
 export const fields: ApiConfig["fields"] = {
-  // id: {
-  //   type: "id",
-  // },
+  id: {
+    type: "id",
+  },
   title: {
-    type: "auto",
+    type: "textField",
   },
   body: {
-    type: "ckeditor",
+    type: "textArea",
   },
   image: {
     type: "file",
@@ -131,9 +131,6 @@ export const fields: ApiConfig["fields"] = {
   },
   tags: {
     type: "string[]",
-  },
-  body: {
-    type: "ckeditor",
   },
   updatedOn: {
     type: "datetime",

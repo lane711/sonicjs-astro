@@ -1,5 +1,43 @@
 ---
+import { convertFormDataToObject } from '../../../services/utils';
 import LoginLayout from '../layouts/admin-login.astro'
+import SonicJsLogo from '../../../../public/images/sonicjs-logo.svg';
+import { Image } from 'astro:assets';
+
+if (Astro.request.method === "POST") {
+  try {
+    const formData = await Astro.request.formData();
+    const object = convertFormDataToObject(formData);
+    var json = JSON.stringify(object);
+
+    //now post to our own post api
+    const baseURl = Astro.request.url.split("/admin/")[0];
+    const postUrl = `${baseURl}/api/v1/${tableConfigRecord.route}/${id}`;
+    try {
+      // const response = await fetch(postUrl, {
+      //   method: "PUT",
+      //   body: json,
+      // });
+
+      // if (!response.ok) {
+      //   throw new Error("Network response was not ok");
+      // }
+
+      // const result = await response.json();
+      // console.log("Success:", result);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+
+    // Do something with the data
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(error.message);
+    }
+  } finally {
+    return Astro.redirect(`/admin/tables/${tableConfigRecord.route}`);
+  }
+}
 
 ---
 <!--
@@ -27,8 +65,10 @@ import LoginLayout from '../layouts/admin-login.astro'
   <LoginLayout title="Login: SonicJs Admin"> 
 <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-sm">
+      <Image  src={SonicJsLogo} format="svg" alt="Logo" height={26} loading="lazy" />
+
       <img class="mx-auto h-10 w-auto" src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=500" alt="Your Company">
-      <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-white">Sign in to your account</h2>
+      <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-white">Register your admin account</h2>
     </div>
   
     <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
@@ -53,13 +93,13 @@ import LoginLayout from '../layouts/admin-login.astro'
         </div>
   
         <div>
-          <button type="submit" class="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">Sign in</button>
+          <button type="submit" class="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">Register</button>
         </div>
       </form>
   
       <p class="mt-10 text-center text-sm text-gray-400">
-        Not a member?
-        <a href="#" class="font-semibold leading-6 text-indigo-400 hover:text-indigo-300">Start a 14 day free trial</a>
+        Need help?
+        <a href="https://discord.gg/8bMy6bv3sZ" target="_blank" class="font-semibold leading-6 text-indigo-400 hover:text-indigo-300">Join us on Discord</a>
       </p>
     </div>
   </div>

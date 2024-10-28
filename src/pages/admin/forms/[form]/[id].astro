@@ -16,7 +16,7 @@ const getRecord = async (table, id) => {
   try {
     result = await fetch(getUrl).then((response) => response.json());
 
-    console.log("Success:", result);
+    // console.log("Success:", result);
     return result.data;
   } catch (error) {
     console.error("Error:", error);
@@ -58,7 +58,7 @@ if (Astro.request.method === "POST") {
       }
 
       const result = await response.json();
-      console.log("Success:", result);
+      // console.log("Success:", result);
     } catch (error) {
       console.error("Error:", error);
     }

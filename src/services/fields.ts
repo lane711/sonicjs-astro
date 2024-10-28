@@ -9,7 +9,7 @@ export const getFieldDefinitions = (tableConfig, record) => {
   const formFields = definitionArray.map((field) => {
     const key = field.config.name;
     const fieldOverride = tableConfig.fields ? tableConfig.fields[key] : null;
-    const fieldType = fieldOverride ? fieldOverride : "textField";
+    const fieldType = fieldOverride ? fieldOverride.type : "textField";
 
     if (record && record[key]) {
       return { key, type: fieldType, value: record[key] };
@@ -19,6 +19,6 @@ export const getFieldDefinitions = (tableConfig, record) => {
   });
 
   tableConfig.formFields = formFields;
-  console.log("formFields", formFields);
+  // console.log("formFields", formFields);
   return tableConfig;
 };
