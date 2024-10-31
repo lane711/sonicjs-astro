@@ -15,7 +15,7 @@ import type { AdapterAccountType } from "next-auth/adapters";
 //   authToken: "DATABASE_AUTH_TOKEN",
 // })
 
-// const db = drizzle(Astro.locals.runtime.env.D1, {});
+// export const db = drizzle;
 
 export const users = sqliteTable("user", {
   id: text("id")

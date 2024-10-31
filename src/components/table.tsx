@@ -58,7 +58,7 @@ function Table({ tableConfig }) {
     setShowDeleteConfirmation(true);
   };
 
-  console.log("columns-->", columns);
+  // console.log("columns-->", columns);
 
   function truncateText(text: string, maxLength: number): string {
     if (text) {

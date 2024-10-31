@@ -1,20 +1,17 @@
 import NextAuth from "next-auth"
-// import { DrizzleAdapter } from "@auth/drizzle-adapter"
-// import { db } from "./schema.ts"
 import Email from "next-auth/providers/email"
- 
-// export const { handlers, auth, signIn, signOut } = NextAuth({
-//   adapter: DrizzleAdapter(db),
-//   providers: [Email],
-// })
-
-
-// import NextAuth from "next-auth"
-// import Google from "next-auth/providers/google"
 import { DrizzleAdapter } from "@auth/drizzle-adapter"
-import { accounts, sessions, users, verificationTokens } from "./src/db/schema/users"
- 
-export const { handlers, auth } = NextAuth({
+import {  accounts, sessions, users, verificationTokens } from "./src/db/schema/users"
+import { drizzle } from "drizzle-orm/d1";
+// const db = drizzle(process.env.DB_FILE_NAME!);
+import type { APIContext } from "astro";
+
+// let db: any;
+// export const { handlers, auth } =  NextAuth({
+const req = Astro.request;
+
+  export const auth = (db) =>  NextAuth({
+
   adapter: DrizzleAdapter(db, {
     usersTable: users,
     accountsTable: accounts,
