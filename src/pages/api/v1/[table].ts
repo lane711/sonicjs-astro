@@ -14,12 +14,6 @@ import {
 import { deleteRecord, getRecords, insertRecord } from "../../../services/data";
 import { return204, return400, return404, return500 } from "../../../services/return-types";
 
-import NextAuth from "next-auth"
-// import { DrizzleAdapter } from "@auth/drizzle-adapter";
-import { D1Adapter } from "@auth/d1-adapter"
-
-// import {  accounts, sessions, users, verificationTokens } from "../../../db/schema/users";
-import Email from "next-auth/providers/email"
 
 
 export const GET: APIRoute = async (context) => {
@@ -42,23 +36,7 @@ export const GET: APIRoute = async (context) => {
   const { env } = context.locals.runtime;
   // const db = drizzle(env.D1);
 
-  console.log('---> env d1', env.D1)
 
-  const { handlers, auth, signIn, signOut } = NextAuth({
-    providers: [Email],
-    adapter: D1Adapter(env.D1),
-  })
-
-  // const auth = NextAuth({
-
-  //   // adapter: D1Adapter(env.D1, {
-  //   //   usersTable: users,
-  //   //   accountsTable: accounts,
-  //   //   sessionsTable: sessions,
-  //   //   verificationTokensTable: verificationTokens,
-  //   // }),
-  //   providers: [Email],
-  // })
 
   const request = context.request;
 
