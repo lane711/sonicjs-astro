@@ -16,10 +16,6 @@ import AdminLayout from './layouts/admin-layout.astro'
 //   .from(linkShare)
 //   .orderBy(desc(linkShare.created));
 
-// auth
-import { getSession } from 'auth-astro/server';
-
-const session = await getSession(Astro.request);
 ---
 
 <AdminLayout title="SonicJs Admin">
