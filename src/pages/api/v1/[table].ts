@@ -44,10 +44,10 @@ export const GET: APIRoute = async (context) => {
 
   console.log('---> env d1', env.D1)
 
-  const { handlers, auth, signIn, signOut } = NextAuth({
-    providers: [Email],
-    adapter: D1Adapter(env.D1),
-  })
+  // const { handlers, auth, signIn, signOut } = NextAuth({
+  //   providers: [Email],
+  //   adapter: D1Adapter(env.D1),
+  // })
 
   // const auth = NextAuth({
 

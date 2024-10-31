@@ -1,6 +1,6 @@
 ---
 const db = Astro.locals.runtime.env.D1;
-import  {auth} from "../../../auth.ts";
-const {signIn} = auth(db)
+import  {auth, signIn} from "../../../auth.ts";
+signIn('ldc0618@gmail.com');
 ---
 <h1>Magic Link</h1>
