@@ -1,27 +1,37 @@
-import NextAuth from "next-auth";
-import Email from "next-auth/providers/email";
-import { DrizzleAdapter } from "@auth/drizzle-adapter";
-import {
-  accounts,
-  sessions,
-  users,
-  verificationTokens,
-} from "./src/db/schema/users";
-import { drizzle } from "drizzle-orm/d1";
-// const db = drizzle(process.env.DB_FILE_NAME!);
-import type { APIContext } from "astro";
-
+// import NextAuth from "next-auth"
+// import { D1Adapter } from "@auth/d1-adapter"
 const env = import.meta.env;
-const db = import.meta.env.D1;
-// let db: any;
-// export const { handlers, auth } =  NextAuth({
+ const db = import.meta.env.D1;
+// export const { handlers, auth, signIn, signOut } = NextAuth({
+//   providers: [],
+//   adapter: D1Adapter(db),
+// })
 
-export const auth = NextAuth({
-  adapter: DrizzleAdapter(db, {
-    usersTable: users,
-    accountsTable: accounts,
-    sessionsTable: sessions,
-    verificationTokensTable: verificationTokens,
-  }),
-  providers: [Email],
-});
+
+// import NextAuth from "next-auth";
+// import Email from "next-auth/providers/email";
+// import { DrizzleAdapter } from "@auth/drizzle-adapter";
+// import {
+//   accounts,
+//   sessions,
+//   users,
+//   verificationTokens,
+// } from "./src/db/schema/users";
+// import { drizzle } from "drizzle-orm/d1";
+// // const db = drizzle(process.env.DB_FILE_NAME!);
+// import type { APIContext } from "astro";
+
+// const env = import.meta.env;
+// const db = import.meta.env.D1;
+// // let db: any;
+// // export const { handlers, auth } =  NextAuth({
+
+// export const auth = NextAuth({
+//   adapter: DrizzleAdapter(db, {
+//     usersTable: users,
+//     accountsTable: accounts,
+//     sessionsTable: sessions,
+//     verificationTokensTable: verificationTokens,
+//   }),
+//   providers: [Email],
+// });
