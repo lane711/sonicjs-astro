@@ -152,6 +152,10 @@ function Table({ tableConfig }) {
     }
   };
 
+  const pagerColor = (pageNumber) => {
+  return pageNumber === table.getState().pagination.pageIndex + 1 ? "border-indigo-500 text-indigo-600" : "border-transparent text-gray-500 hover:text-gray-300";
+  }
+
   if (table) {
     console.log("sorting", table.getState().sorting);
     const pageArray = Array.from(
@@ -311,8 +315,6 @@ function Table({ tableConfig }) {
               </div>
             </div>
             <div className="px-4 sm:px-6 lg:px-8 mt-4">
-              Page {table.getState().pagination.pageIndex + 1}
-              {" of "} {table.getPageCount()}
               <nav className="flex items-center justify-between border-t border-gray-200 px-4 sm:px-0">
                 <div className="-mt-px flex w-0 flex-1">
                   <Button
@@ -320,7 +322,7 @@ function Table({ tableConfig }) {
                       table.previousPage();
                     }}
                     isDisabled={table.getCanPreviousPage()}
-                    className="inline-flex items-center border-t-2 border-transparent pr-1 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700"
+                    className="inline-flex items-center border-t-2 border-transparent pr-1 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-300"
                   >
                     <ArrowLongLeftIcon
                       aria-hidden="true"
@@ -331,54 +333,16 @@ function Table({ tableConfig }) {
                 </div>
                 <div className="hidden md:-mt-px md:flex">
                   {pageArray.map((pageNumber) => 
-                    <Button className="inline-flex items-center border-t-2 border-transparent px-4 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700">
+                    <Button onClick={() => table.setPageIndex(pageNumber-1)} className={"inline-flex items-center border-t-2 border-transparent px-4 pt-4 text-sm font-medium hover:border-gray-300 hover:text-gray-300" + pagerColor(pageNumber)}>
                       {pageNumber}
                     </Button>
                   )}
-                  <Button className="inline-flex items-center border-t-2 border-transparent px-4 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700">
-                    1
-                  </Button>
-                  <a
-                    href="#"
-                    className="inline-flex items-center border-t-2 border-transparent px-4 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                  >
-                    1
-                  </a>
-                  {/* Current: "border-indigo-500 text-indigo-600", Default: "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" */}
-                  <a
-                    href="#"
-                    aria-current="page"
-                    className="inline-flex items-center border-t-2 border-indigo-500 px-4 pt-4 text-sm font-medium text-indigo-600"
-                  >
-                    2
-                  </a>
-                  <a
-                    href="#"
-                    className="inline-flex items-center border-t-2 border-transparent px-4 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                  >
-                    3
-                  </a>
-                  <span className="inline-flex items-center border-t-2 border-transparent px-4 pt-4 text-sm font-medium text-gray-500">
+                
+                {/* TODO: split page buttons when there are many pages */}
+                  {/* <span className="inline-flex items-center border-t-2 border-transparent px-4 pt-4 text-sm font-medium text-gray-500">
                     ...
-                  </span>
-                  <a
-                    href="#"
-                    className="inline-flex items-center border-t-2 border-transparent px-4 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                  >
-                    8
-                  </a>
-                  <a
-                    href="#"
-                    className="inline-flex items-center border-t-2 border-transparent px-4 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                  >
-                    9
-                  </a>
-                  <a
-                    href="#"
-                    className="inline-flex items-center border-t-2 border-transparent px-4 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700"
-                  >
-                    10
-                  </a>
+                  </span> */}
+                 
                 </div>
                 <div className="-mt-px flex w-0 flex-1 justify-end">
                   <Button
@@ -386,7 +350,7 @@ function Table({ tableConfig }) {
                       table.nextPage();
                     }}
                     isDisabled={table.getCanNextPage()}
-                    className="inline-flex items-center border-t-2 border-transparent pl-1 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700"
+                    className="inline-flex items-center border-t-2 border-transparent pl-1 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-300"
                   >
                     Next
                     <ArrowLongRightIcon

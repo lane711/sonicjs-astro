@@ -1,10 +1,12 @@
 import { useCallback } from "react";
+import { S } from "../../dist/_worker.js/chunks/astro/env-setup_DQkCwUzq.mjs";
 
 export const TableSearch = ({ columnFilters, setColumnFilters }) => {
+    // TODO: title should not be hard coded, the developer should be to specify which fields are searchable
   const filterValue =
     columnFilters.find((filter) => filter.id === "title")?.value || "";
-  console.log("filterValue", filterValue);
-  const onFilterChange = (id, value) =>
+
+    const onFilterChange = (id, value) =>
     setColumnFilters((prev) =>
       prev.filter((f) => f.id !== id).concat({ id, value })
     );
