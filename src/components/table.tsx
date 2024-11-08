@@ -7,6 +7,7 @@ import {
   getSortedRowModel,
   type ColumnDef,
   getPaginationRowModel,
+  getFilteredRowModel,
 } from "@tanstack/react-table";
 import {
   ArrowLongLeftIcon,
@@ -19,6 +20,7 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import DeleteConfirmation from "./delete-confirmation";
 import { Button } from "@headlessui/react";
+import { TableSearch } from "./table-search";
 
 const columnHelper = createColumnHelper();
 
@@ -38,6 +40,7 @@ function Table({ tableConfig }) {
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [recordToDelete, setRecordToDelete] = useState(false);
+  const [columnFilters, setColumnFilters] = useState([{id:'title', value: ''}]);
 
   const pageSize = 18;
 
@@ -95,10 +98,12 @@ function Table({ tableConfig }) {
     getCoreRowModel: getCoreRowModel(),
     state: {
       sorting,
+      columnFilters
     },
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
   });
 
   useEffect(() => {
@@ -149,6 +154,10 @@ function Table({ tableConfig }) {
 
   if (table) {
     console.log("sorting", table.getState().sorting);
+    const pageArray = Array.from(
+      { length: table.getPageCount() },
+      (_, i) => i + 1
+    );
 
     return (
       <div className="bg-gray-900">
@@ -181,6 +190,7 @@ function Table({ tableConfig }) {
                   </button>
                 </div>
               </div>
+              <div className="mt-8 flow-root">  <TableSearch columnFilters={columnFilters} setColumnFilters={setColumnFilters} /></div>
               <div className="mt-8 flow-root">
                 <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                   <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
@@ -320,6 +330,14 @@ function Table({ tableConfig }) {
                   </Button>
                 </div>
                 <div className="hidden md:-mt-px md:flex">
+                  {pageArray.map((pageNumber) => 
+                    <Button className="inline-flex items-center border-t-2 border-transparent px-4 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700">
+                      {pageNumber}
+                    </Button>
+                  )}
+                  <Button className="inline-flex items-center border-t-2 border-transparent px-4 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700">
+                    1
+                  </Button>
                   <a
                     href="#"
                     className="inline-flex items-center border-t-2 border-transparent px-4 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700"
