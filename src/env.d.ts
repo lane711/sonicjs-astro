@@ -1,10 +1,12 @@
 /// <reference types="astro/client" />
 
 type KVNamespace = import("@cloudflare/workers-types").KVNamespace;
+type D1Database = import("@cloudflare/workers-types").D1Database;
+
 type ENV = {
   // replace `MY_KV` with your KV namespace
   //   MY_KV: KVNamespace;
-  D1: D1Namespace;
+  D1: D1Database;
 };
 
 // use a default runtime configuration (advanced mode).

@@ -14,12 +14,12 @@ import {
 import { deleteRecord, getRecords, insertRecord } from "../../../services/data";
 import { return204, return400, return404, return500 } from "../../../services/return-types";
 
-import NextAuth from "next-auth"
+// import NextAuth from "next-auth"
 // import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { D1Adapter } from "@auth/d1-adapter"
 
 // import {  accounts, sessions, users, verificationTokens } from "../../../db/schema/users";
-import Email from "next-auth/providers/email"
+// import Email from "next-auth/providers/email"
 
 
 export const GET: APIRoute = async (context) => {
