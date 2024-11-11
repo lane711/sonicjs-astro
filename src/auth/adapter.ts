@@ -1,10 +1,8 @@
-import { config } from "./config";
-import type { Adapter } from "./interface";
-
-import { and, eq, inArray, notInArray } from "drizzle-orm";
+import { and, eq, inArray, notInArray } from 'drizzle-orm';
+import type { Adapter } from './interface';
 
 export const adapter: Adapter = {
-  getUser: async (userId) => {
+  getUser: async (config, userId) => {
     const [databaseUser] = await config.db
       .select()
       .from(config.userSchema)
@@ -13,13 +11,22 @@ export const adapter: Adapter = {
     return databaseUser ?? null;
   },
 
-  setUser: async (user, key, transaction) => {
+  getUserByEmail: async (config, email) => {
+    const [databaseUser] = await config.db
+      .select()
+      .from(config.userSchema)
+      .where(eq(config.userSchema[config.colDef.user.email], email))
+      .limit(1);
+    return databaseUser ?? null;
+  },
+
+  setUser: async (config, user, key, transaction) => {
     const trx = transaction ?? config.db;
     if (!key) {
       const [databaseUser] = await trx
         .insert(config.userSchema)
         .values({
-          ...user,
+          ...user
         })
         .returning();
       if (!databaseUser) throw new Error("Couldn't create user");
@@ -29,7 +36,7 @@ export const adapter: Adapter = {
     const [databaseUser] = await trx
       .insert(config.userSchema)
       .values({
-        ...user,
+        ...user
       })
       .returning();
     if (!databaseUser) throw new Error("Couldn't create user");
@@ -38,7 +45,7 @@ export const adapter: Adapter = {
       .insert(config.keySchema)
       .values({
         ...key,
-        [config.colDef.key.userId]: databaseUser[config.colDef.user.id],
+        [config.colDef.key.userId]: databaseUser[config.colDef.user.id]
       })
       .returning();
     if (!databaseKey) throw new Error("Couldn't create key");
@@ -46,7 +53,7 @@ export const adapter: Adapter = {
     return databaseUser;
   },
 
-  updateUser: async (userId, partialUser) => {
+  updateUser: async (config, userId, partialUser) => {
     const [databaseUser] = await config.db
       .update(config.userSchema)
       .set(partialUser)
@@ -56,7 +63,7 @@ export const adapter: Adapter = {
     return databaseUser;
   },
 
-  deleteUser: async (userId) => {
+  deleteUser: async (config, userId) => {
     // order here is very important, no transaction required
     await config.db
       .delete(config.sessionSchema)
@@ -69,7 +76,7 @@ export const adapter: Adapter = {
       .where(eq(config.userSchema[config.colDef.user.id], userId));
   },
 
-  getKey: async (provider, providerUserId) => {
+  getKey: async (config, provider, providerUserId) => {
     const [databaseKey] = await config.db
       .select()
       .from(config.keySchema)
@@ -83,7 +90,7 @@ export const adapter: Adapter = {
     return databaseKey ?? null;
   },
 
-  getSessionAndUser: async (sessionId) => {
+  getSessionAndUser: async (config, sessionId) => {
     const [databaseSession] = await config.db
       .select()
       .from(config.sessionSchema)
@@ -98,10 +105,13 @@ export const adapter: Adapter = {
       .limit(1);
     if (!databaseSession?.users) return null;
 
-    return { session: databaseSession.session, user: databaseSession.users };
+    return {
+      session: databaseSession[config.tableNames.session],
+      user: databaseSession[config.tableNames.user]
+    };
   },
 
-  getSessionsByUserId: async (userId) => {
+  getSessionsByUserId: async (config, userId) => {
     const databaseSessions = await config.db
       .select()
       .from(config.sessionSchema)
@@ -109,7 +119,7 @@ export const adapter: Adapter = {
     return databaseSessions;
   },
 
-  updateSession: async (sessionId, partialSession) => {
+  updateSession: async (config, sessionId, partialSession) => {
     const [databaseSession] = await config.db
       .update(config.sessionSchema)
       .set(partialSession)
@@ -119,7 +129,7 @@ export const adapter: Adapter = {
     return databaseSession;
   },
 
-  setSession: async (session) => {
+  setSession: async (config, session) => {
     const [databaseSession] = await config.db
       .insert(config.sessionSchema)
       .values(session)
@@ -128,13 +138,13 @@ export const adapter: Adapter = {
     return databaseSession;
   },
 
-  deleteSession: async (sessionId) => {
+  deleteSession: async (config, sessionId) => {
     await config.db
       .delete(config.sessionSchema)
       .where(eq(config.sessionSchema[config.colDef.session.id], sessionId));
   },
 
-  deleteSessions: async (sessionIds) => {
+  deleteSessions: async (config, sessionIds) => {
     await config.db
       .delete(config.sessionSchema)
       .where(
@@ -142,7 +152,7 @@ export const adapter: Adapter = {
       );
   },
 
-  deleteSessionsByUserId: async (userId, sessionsToKeep) => {
+  deleteSessionsByUserId: async (config, userId, sessionsToKeep) => {
     await config.db
       .delete(config.sessionSchema)
       .where(
@@ -156,7 +166,7 @@ export const adapter: Adapter = {
       );
   },
 
-  setKey: async (key) => {
+  setKey: async (config, key) => {
     const [databaseKey] = await config.db
       .insert(config.keySchema)
       .values(key)
@@ -165,7 +175,7 @@ export const adapter: Adapter = {
     return databaseKey;
   },
 
-  deleteKey: async (provider, providerUserId) => {
+  deleteKey: async (config, provider, providerUserId) => {
     await config.db
       .delete(config.keySchema)
       .where(
@@ -176,7 +186,7 @@ export const adapter: Adapter = {
       );
   },
 
-  getKeysByUserId: async (userId) => {
+  getKeysByUserId: async (config, userId) => {
     const databaseKeys = await config.db
       .select()
       .from(config.keySchema)
@@ -184,7 +194,7 @@ export const adapter: Adapter = {
     return databaseKeys;
   },
 
-  updateKey: async (provider, providerUserId, partialKey) => {
+  updateKey: async (config, provider, providerUserId, partialKey) => {
     const [databaseKey] = await config.db
       .update(config.keySchema)
       .set(partialKey)
@@ -197,5 +207,5 @@ export const adapter: Adapter = {
       .returning();
     if (!databaseKey) throw new Error("Couldn't update key");
     return databaseKey;
-  },
+  }
 };

@@ -1,7 +1,7 @@
-import type { APIContext as AppContext } from "astro";
+import type { APIContext as AppContext } from 'astro';
 
 //TODO: fix gets
-export function isAdminOrEditor(ctx: AppContext) {
+export function isAdminOrEditor(ctx?: AppContext) {
   //   const user = ctx.get('user');
   //   const role = user?.role?.toLowerCase() || '';
   //   if (role === 'admin' || role === 'editor') {
@@ -10,7 +10,7 @@ export function isAdminOrEditor(ctx: AppContext) {
   return false;
 }
 
-export function isAdmin(ctx: AppContext) {
+export function isAdmin(ctx?: AppContext) {
   //   const user = ctx.get('user');
   //   const role = user?.role?.toLowerCase() || '';
   //   if (role === 'admin') {
@@ -19,13 +19,13 @@ export function isAdmin(ctx: AppContext) {
   return false;
 }
 
-export function isUser(ctx: AppContext, id: string) {
+export function isUser(ctx?: AppContext, id?: string) {
   //   const user = ctx.get('user');
   //   return user?.userId === id;
   return false;
 }
 
-export function isAdminOrUser(ctx: AppContext, id: string) {
+export function isAdminOrUser(ctx?: AppContext, id?: string) {
   return isAdmin(ctx) || isUser(ctx, id);
   return false;
 }

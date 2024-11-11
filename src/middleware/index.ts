@@ -1,10 +1,16 @@
-export function onRequest(context, next) {
-  // intercept data from a request
-  // optionally, modify the properties in `locals`
-  context.locals.title = "New title ABC";
-  context.locals.user = { username: "lane" };
+import { defineMiddleware } from 'astro:middleware';
+import { initializeConfig } from '@/auth/config';
+import { Auth } from '@/auth/auth';
 
-  console.log("bam middleware");
+export const onRequest = defineMiddleware((context, next) => {
+  const config = initializeConfig(
+    context.locals.runtime.env.D1,
+    context.locals.runtime.env
+  );
+  context.locals.auth = new Auth(config);
+  context.locals.user = { username: 'lane' };
+
+  console.log('bam middleware');
 
   return next();
-}
+});

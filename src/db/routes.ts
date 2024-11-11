@@ -8,7 +8,8 @@ import * as userSessions from './schema/userSessions';
 
 // import { AppContext } from '../server';
 import { isAdminOrEditor } from './config-helpers';
-import type { APIContext as AppContext } from "astro";
+import type { APIContext as AppContext } from 'astro';
+import type { SQLiteColumnBuilderBase } from 'drizzle-orm/sqlite-core';
 
 export type SonicJSConfig = {
   apiConfig: ApiConfig[];
@@ -17,7 +18,7 @@ export type SonicJSConfig = {
 export type SonicJSFilter = Record<string, any>;
 export interface ApiConfig {
   table: string;
-  definition:string;
+  definition: Record<string, SQLiteColumnBuilderBase>;
   route: string;
   name: string;
   icon: string;
@@ -205,18 +206,36 @@ export const tableSchemas = {
   userSessions
 };
 
+export const schema = {
+  schema: {
+    users: users.table,
+    usersRelations: users.relation,
+    userKeys: userKeys.table,
+    userKeysRelations: userKeys.relation,
+    userSessions: userSessions.table,
+    userSessionsRelations: userSessions.relation,
+    posts: posts.table,
+    postsRelations: posts.relation,
+    comments: comments.table,
+    commentsRelations: comments.relation,
+    categories: categories.table,
+    categoriesToPosts: categoriesToPosts.table,
+    categoriesToPostsRelations: categoriesToPosts.relation
+  }
+};
+
 for (const key of Object.keys(tableSchemas)) {
-  const table = tableSchemas[key];
-  if (table.route) {
+  const table = tableSchemas[key as keyof typeof tableSchemas];
+  if ('route' in table && table.route) {
     apiConfig.push({
       table: table.tableName,
-      definition: table.definition,
+      definition: 'definition' in table ? table.definition : {},
       route: table.route,
       access: table.access,
-      hooks: table.hooks,
-      fields: table.fields,
-      name: table.name,
-      icon: table.icon
+      hooks: 'hooks' in table ? table.hooks : undefined,
+      fields: 'fields' in table ? table.fields : undefined,
+      name: 'name' in table ? table.name : '',
+      icon: 'icon' in table ? table.icon : ''
     });
   }
 }

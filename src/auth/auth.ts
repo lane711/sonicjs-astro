@@ -1,34 +1,52 @@
-import { config } from "./config";
-import { adapter } from "./adapter";
-import type { Adapter } from "./interface";
+import { adapter } from './adapter';
+import type { Adapter } from './interface';
+import type { Config } from './config';
 
-import { hashPassword, validateHash } from "./utils/crypto";
-import { isValidDatabaseSession } from "./utils/session";
-import { isWithinExpiration } from "./utils/date";
-import { generateRandomString } from "./utils/nanoid";
+import { hashPassword, validateHash } from './utils/crypto';
+import { isValidDatabaseSession } from './utils/session';
+import { isWithinExpiration } from './utils/date';
+import { generateRandomString } from './utils/nanoid';
 
 export class Auth {
+  constructor(public config: Config) {}
+
   public passwordHash = {
     generate: hashPassword,
-    validate: validateHash,
+    validate: validateHash
   };
 
   private sessionExpiresIn = {
     activePeriod: 1000 * 60 * 60 * 24, // 1 day
-    idlePeriod: 1000 * 60 * 60 * 24 * 14, // 14 days
+    idlePeriod: 1000 * 60 * 60 * 24 * 14 // 14 days
   };
 
+  private async generatePassword(password?: string | null) {
+    const salt = generateRandomString(16);
+    return password ?
+        (
+          await this.passwordHash.generate({
+            password: password,
+            salt,
+            hash: this.config.password.hash,
+            iterations: this.config.password.iterations,
+            kdf: this.config.password.kdf
+          })
+        ).hashedPassword
+      : null;
+  }
+
   private async getDatabaseSessionAndUser(sessionId: Adapter.SId) {
-    const instance = await adapter.getSessionAndUser(sessionId);
-    if (!instance) throw new Error("Session not found");
+    const instance = await adapter.getSessionAndUser(this.config, sessionId);
+    if (!instance) throw new Error('Session not found');
     if (
+      !instance.session ||
       !isValidDatabaseSession(
-        instance.session[config.colDef.session.idleExpires]
+        instance.session[this.config.colDef.session.idleExpires]
       )
     ) {
-      throw new Error("Session expired");
+      throw new Error('Session expired');
     }
-    if (!instance.user) throw new Error("User not found");
+    if (!instance.user) throw new Error('User not found');
     return instance;
   }
 
@@ -39,46 +57,48 @@ export class Auth {
     const activePeriodExpiresAt = new Date(
       new Date().getTime() +
         (sessionExpiresIn?.activePeriod ?? this.sessionExpiresIn.activePeriod)
-    );
+    ).getTime();
     const idlePeriodExpiresAt = new Date(
-      activePeriodExpiresAt.getTime() +
+      activePeriodExpiresAt +
         (sessionExpiresIn?.idlePeriod ?? this.sessionExpiresIn.idlePeriod)
-    );
+    ).getTime();
     return { activePeriodExpiresAt, idlePeriodExpiresAt };
   }
 
   public async getUser(userId: Adapter.UId) {
-    return adapter.getUser(userId);
+    return adapter.getUser(this.config, userId);
+  }
+
+  public async getUserByEmail(email: string) {
+    return adapter.getUserByEmail(this.config, email);
   }
 
   public async createUser({
     key,
     attributes,
-    transaction,
+    transaction
   }: {
     key:
       | ({ password: string | null } & Omit<
           Adapter.KeyInsertSchema,
-          | typeof config.colDef.key.userId
-          | typeof config.colDef.key.hashedPassword
+          | Config['colDef']['key']['userId']
+          | Config['colDef']['key']['hashedPassword']
         >)
       | null;
     attributes: Adapter.UserInsertSchema;
     transaction?: Adapter.DB;
   }) {
-    const trx = transaction ?? config.db;
+    const trx = transaction ?? this.config.db;
     if (key === null) {
-      return adapter.setUser(attributes, null, trx);
+      return adapter.setUser(this.config, attributes, null, trx);
     }
 
-    const hashedPassword = key.password
-      ? await this.passwordHash.generate(key.password)
-      : null;
     return adapter.setUser(
+      this.config,
       attributes,
       {
         ...key,
-        hashedPassword,
+        hashed_password: await this.generatePassword(key.password)
       },
       trx
     );
@@ -88,32 +108,36 @@ export class Auth {
     userId: Adapter.UId,
     attributes: Adapter.UserInsertSchema
   ) {
-    return adapter.updateUser(userId, attributes);
+    return adapter.updateUser(this.config, userId, attributes);
   }
 
   public async deleteUser(userId: Adapter.UId) {
-    return adapter.deleteUser(userId);
+    return adapter.deleteUser(this.config, userId);
   }
 
   public async useKey({
     provider,
     providerUserId,
-    password,
+    password
   }: {
     provider: Adapter.KProvider;
     providerUserId: Adapter.KProviderUserId;
     password: string | null;
   }) {
-    const databaseKey = await adapter.getKey(provider, providerUserId);
-    if (!databaseKey) throw new Error("Key not found");
-    const hashedPassword = databaseKey.hashedPassword;
+    const databaseKey = await adapter.getKey(
+      this.config,
+      provider,
+      providerUserId
+    );
+    if (!databaseKey) throw new Error('Key not found');
+    const hashedPassword = databaseKey[this.config.colDef.key.hashedPassword];
     if (hashedPassword) {
-      if (password === null) throw new Error("Password required");
+      if (password === null) throw new Error('Password required');
       const isValid = await this.passwordHash.validate(
         password,
         hashedPassword
       );
-      if (!isValid) throw new Error("Invalid password");
+      if (!isValid) throw new Error('Invalid password');
     }
     return databaseKey;
   }
@@ -121,85 +145,89 @@ export class Auth {
   public async getSession(sessionId: Adapter.SId) {
     return {
       ...(await this.getDatabaseSessionAndUser(sessionId)),
-      fresh: false,
+      fresh: false
     };
   }
 
   public async getAllUserSessions(userId: Adapter.UId) {
-    const sessions = await adapter.getSessionsByUserId(userId);
+    const sessions = await adapter.getSessionsByUserId(this.config, userId);
     return sessions
       .filter((session) =>
-        isValidDatabaseSession(session[config.colDef.session.idleExpires])
+        isValidDatabaseSession(session[this.config.colDef.session.idleExpires])
       )
       .map((session) => ({
         ...session,
-        fresh: false,
+        fresh: false
       }));
   }
 
   public async validateSession(sessionId: Adapter.SId) {
     const { session, user } = await this.getDatabaseSessionAndUser(sessionId);
-    const active = isWithinExpiration(
-      session[config.colDef.session.activeExpires].getTime()
-    );
+    const active =
+      session &&
+      isWithinExpiration(session[this.config.colDef.session.activeExpires]);
     if (active) {
       return {
         session,
         user,
-        fresh: false,
+        fresh: false
       };
     }
     const { activePeriodExpiresAt, idlePeriodExpiresAt } =
       this.getNewSessionExpiration();
 
-    const databaseSession = await adapter.updateSession(
-      session[config.colDef.session.id],
-      {
-        [config.colDef.session.activeExpires]: activePeriodExpiresAt,
-        [config.colDef.session.idleExpires]: idlePeriodExpiresAt,
-      }
-    );
+    const databaseSession =
+      session ?
+        await adapter.updateSession(
+          this.config,
+          session[this.config.colDef.session.id],
+          {
+            [this.config.colDef.session.activeExpires]: activePeriodExpiresAt,
+            [this.config.colDef.session.idleExpires]: idlePeriodExpiresAt
+          }
+        )
+      : null;
 
     return {
       session: databaseSession,
       user,
-      fresh: true,
+      fresh: true
     };
   }
 
   public async createSession({
     userId,
     attributes,
-    sessionId,
+    sessionId
   }: {
     userId: Adapter.UId;
     attributes: Omit<
       Adapter.SessionInsertSchema,
-      | typeof config.colDef.session.id
-      | typeof config.colDef.session.userId
-      | typeof config.colDef.session.activeExpires
-      | typeof config.colDef.session.idleExpires
+      | Config['colDef']['session']['id']
+      | Config['colDef']['session']['userId']
+      | Config['colDef']['session']['activeExpires']
+      | Config['colDef']['session']['idleExpires']
     >;
     sessionId?: Adapter.SId;
   }) {
     const { activePeriodExpiresAt, idlePeriodExpiresAt } =
       this.getNewSessionExpiration();
     const token = sessionId ?? generateRandomString(40);
-    const databaseUser = await adapter.getUser(userId);
-    if (!databaseUser) throw new Error("User not found");
+    const databaseUser = await adapter.getUser(this.config, userId);
+    if (!databaseUser) throw new Error('User not found');
 
-    const databaseSession = await adapter.setSession({
+    const databaseSession = await adapter.setSession(this.config, {
       ...attributes,
-      [config.colDef.session.id]: token,
-      [config.colDef.session.userId]: userId,
-      [config.colDef.session.activeExpires]: activePeriodExpiresAt,
-      [config.colDef.session.idleExpires]: idlePeriodExpiresAt,
+      [this.config.colDef.session.id]: token,
+      [this.config.colDef.session.userId]: userId,
+      [this.config.colDef.session.activeExpires]: activePeriodExpiresAt,
+      [this.config.colDef.session.idleExpires]: idlePeriodExpiresAt
     });
 
     return {
       session: databaseSession,
       user: databaseUser,
-      fresh: false,
+      fresh: false
     };
   }
 
@@ -207,28 +235,29 @@ export class Auth {
     sessionId: Adapter.SId,
     attributes: Adapter.SessionUpdateSchema
   ) {
-    return adapter.updateSession(sessionId, attributes);
+    return adapter.updateSession(this.config, sessionId, attributes);
   }
 
   public async invalidateSession(sessionId: Adapter.SId) {
-    return adapter.deleteSession(sessionId);
+    return adapter.deleteSession(this.config, sessionId);
   }
 
   public async invalidateAllUserSessions(
     userId: Adapter.UId,
     sessionsToKeep: Adapter.SId[]
   ) {
-    return adapter.deleteSessionsByUserId(userId, sessionsToKeep);
+    return adapter.deleteSessionsByUserId(this.config, userId, sessionsToKeep);
   }
 
   public async deleteDeadUserSessions(userId: Adapter.UId) {
-    const sessions = await adapter.getSessionsByUserId(userId);
+    const sessions = await adapter.getSessionsByUserId(this.config, userId);
     const deadSessions = sessions.filter(
       (session) =>
-        !isValidDatabaseSession(session[config.colDef.session.idleExpires])
+        !isValidDatabaseSession(session[this.config.colDef.session.idleExpires])
     );
     await adapter.deleteSessions(
-      deadSessions.map((session) => session[config.colDef.session.id])
+      this.config,
+      deadSessions.map((session) => session[this.config.colDef.session.id])
     );
   }
 
@@ -236,20 +265,18 @@ export class Auth {
     userId,
     provider,
     providerUserId,
-    password,
+    password
   }: {
     userId: Adapter.UId;
     provider: Adapter.KProvider;
     providerUserId: Adapter.KProviderUserId;
     password: string | null;
   }) {
-    return adapter.setKey({
-      [config.colDef.key.userId]: userId,
-      [config.colDef.key.provider]: provider,
-      [config.colDef.key.providerUserId]: providerUserId,
-      [config.colDef.key.hashedPassword]: password
-        ? await this.passwordHash.generate(password)
-        : null,
+    return adapter.setKey(this.config, {
+      [this.config.colDef.key.userId]: userId,
+      [this.config.colDef.key.provider]: provider,
+      [this.config.colDef.key.providerUserId]: providerUserId,
+      hashed_password: password ? await this.generatePassword(password) : null
     });
   }
 
@@ -257,18 +284,18 @@ export class Auth {
     provider: Adapter.KProvider,
     providerUserId: Adapter.KProviderUserId
   ) {
-    return adapter.deleteKey(provider, providerUserId);
+    return adapter.deleteKey(this.config, provider, providerUserId);
   }
 
   public async getKey(
     provider: Adapter.KProvider,
     providerUserId: Adapter.KProviderUserId
   ) {
-    return adapter.getKey(provider, providerUserId);
+    return adapter.getKey(this.config, provider, providerUserId);
   }
 
   public async getAllUserKeys(userId: Adapter.UId) {
-    return adapter.getKeysByUserId(userId);
+    return adapter.getKeysByUserId(this.config, userId);
   }
 
   public async updateKeyPassword(
@@ -276,10 +303,9 @@ export class Auth {
     providerUserId: Adapter.KProviderUserId,
     password: string | null
   ) {
-    return adapter.updateKey(provider, providerUserId, {
-      [config.colDef.key.hashedPassword]: password
-        ? await this.passwordHash.generate(password)
-        : null,
+    return adapter.updateKey(this.config, provider, providerUserId, {
+      [this.config.colDef.key.hashedPassword]:
+        password ? await this.generatePassword(password) : null
     });
   }
 }

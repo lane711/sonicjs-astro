@@ -1,7 +1,52 @@
 ---
-import LoginLayout from '../layouts/admin-login.astro'
+import LoginLayout from '../layouts/admin-login.astro';
 
+const errors = { username: '', email: '', password: '' };
+if (Astro.request.method === 'POST') {
+  try {
+    const data = await Astro.request.formData();
+    const firstName = data.get('firstName');
+    const lastName = data.get('lastName');
+    let email = data.get('email');
+    const password = data.get('password');
+    const confirmPassword = data.get('confirmPassword');
+    if (confirmPassword !== password) {
+      errors.password += 'Password and confirm password do not match. ';
+    }
+    if (typeof email !== 'string' || !email.includes('@')) {
+      errors.email += 'Email is not valid. ';
+    } else if (await Astro.locals.auth.getUserByEmail(email)) {
+      errors.email += 'Email is already registered. ';
+    }
+    if (typeof password !== 'string' || password.length < 6) {
+      errors.password += 'Password must be at least 6 characters. ';
+    }
+    email = email as string;
+    const hasErrors = Object.values(errors).some((msg) => msg);
+    if (!hasErrors) {
+      await Astro.locals.auth.createUser({
+        key: {
+          password: password as string,
+          provider: 'EMAIL',
+          provider_user_id: email
+        },
+        attributes: {
+          email,
+          firstName: typeof firstName === 'string' ? firstName : '',
+          lastName: typeof lastName === 'string' ? lastName : '',
+          role: 'admin'
+        }
+      });
+      // return Astro.redirect('/login');
+    }
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(error.message);
+    }
+  }
+}
 ---
+
 <!--
   This example requires some changes to your config:
   
@@ -15,8 +60,7 @@ import LoginLayout from '../layouts/admin-login.astro'
     ],
   }
   ```
--->
-<!--
+--><!--
   This example requires updating your template:
 
   ```
@@ -24,42 +68,133 @@ import LoginLayout from '../layouts/admin-login.astro'
   <body class="h-full">
   ```
 -->
-  <LoginLayout title="Login: SonicJs Admin"> 
-<div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
-    <div class="sm:mx-auto sm:w-full sm:max-w-sm">
-      <img class="mx-auto h-10 w-auto" src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=500" alt="Your Company">
-      <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-white">Sign in to your account</h2>
+<LoginLayout title='Register: SonicJs Admin'>
+  <div class='flex min-h-full flex-col justify-center px-6 py-12 lg:px-8'>
+    <div class='sm:mx-auto sm:w-full sm:max-w-sm'>
+      <img
+        class='mx-auto h-10 w-auto'
+        src='https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=500'
+        alt='Your Company'
+      />
+      <h2
+        class='mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-white'
+      >
+        Create your account
+      </h2>
     </div>
-  
-    <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-      <form class="space-y-6" action="#" method="POST">
-        <div>
-          <label for="email" class="block text-sm font-medium leading-6 text-white">Email address</label>
-          <div class="mt-2">
-            <input id="email" name="email" type="email" autocomplete="email" required class="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6">
-          </div>
-        </div>
-  
-        <div>
-          <div class="flex items-center justify-between">
-            <label for="password" class="block text-sm font-medium leading-6 text-white">Password</label>
-            <div class="text-sm">
-              <a href="#" class="font-semibold text-indigo-400 hover:text-indigo-300">Forgot password?</a>
+
+    <div class='mt-10 sm:mx-auto sm:w-full sm:max-w-sm'>
+      <form class='space-y-6' method='POST'>
+        <div class='grid grid-cols-2 gap-4'>
+          <div>
+            <label
+              for='firstName'
+              class='block text-sm font-medium leading-6 text-white'
+              >First name</label
+            >
+            <div class='mt-2'>
+              <input
+                id='firstName'
+                name='firstName'
+                type='text'
+                autocomplete='given-name'
+                required
+                class='block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6'
+              />
             </div>
           </div>
-          <div class="mt-2">
-            <input id="password" name="password" type="password" autocomplete="current-password" required class="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6">
+
+          <div>
+            <label
+              for='lastName'
+              class='block text-sm font-medium leading-6 text-white'
+              >Last name</label
+            >
+            <div class='mt-2'>
+              <input
+                id='lastName'
+                name='lastName'
+                type='text'
+                autocomplete='family-name'
+                required
+                class='block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6'
+              />
+            </div>
           </div>
         </div>
-  
+
         <div>
-          <button type="submit" class="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">Sign in</button>
+          <label
+            for='email'
+            class='block text-sm font-medium leading-6 text-white'
+            >Email address</label
+          >
+          {errors.email && <p class='text-red-500'>{errors.email}</p>}
+          <div class='mt-2'>
+            <input
+              id='email'
+              name='email'
+              type='email'
+              autocomplete='email'
+              required
+              class='block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6'
+            />
+          </div>
+        </div>
+
+        <div>
+          <label
+            for='password'
+            class='block text-sm font-medium leading-6 text-white'
+            >Password</label
+          >
+          {errors.password && <p class='text-red-500'>{errors.password}</p>}
+          <div class='mt-2'>
+            <input
+              id='password'
+              name='password'
+              type='password'
+              autocomplete='new-password'
+              required
+              class='block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6'
+            />
+          </div>
+        </div>
+
+        <div>
+          <label
+            for='confirmPassword'
+            class='block text-sm font-medium leading-6 text-white'
+            >Confirm password</label
+          >
+          <div class='mt-2'>
+            <input
+              id='confirmPassword'
+              name='confirmPassword'
+              type='password'
+              autocomplete='new-password'
+              required
+              class='block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6'
+            />
+          </div>
+        </div>
+
+        <div>
+          <button
+            type='submit'
+            class='flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500'
+            >Register</button
+          >
         </div>
       </form>
-  
-      <p class="mt-10 text-center text-sm text-gray-400">
-        Not a member?
-        <a href="#" class="font-semibold leading-6 text-indigo-400 hover:text-indigo-300">Start a 14 day free trial</a>
+
+      <p class='mt-10 text-center text-sm text-gray-400'>
+        Already have an account?
+        <a
+          href='/register/signin'
+          class='font-semibold leading-6 text-indigo-400 hover:text-indigo-300'
+          >Sign in</a
+        >
       </p>
     </div>
   </div>

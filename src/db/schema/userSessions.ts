@@ -4,10 +4,12 @@ import { auditSchema } from './audit';
 import * as users from './users';
 
 export const tableName = 'user_sessions';
-export const name = 'User Sessions'
+export const name = 'User Sessions';
 
 export const definition = {
-  id: text('id').primaryKey(),
+  id: text('id')
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
   user_id: text('user_id')
     .notNull()
     .references(() => users.table.id),
