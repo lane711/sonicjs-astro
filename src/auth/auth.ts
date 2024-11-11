@@ -2,15 +2,15 @@ import { config } from "./config";
 import { adapter } from "./adapter";
 import type { Adapter } from "./interface";
 
-import { hashA2, validateA2Hash } from "./utils/crypto";
+import { hashPassword, validateHash } from "./utils/crypto";
 import { isValidDatabaseSession } from "./utils/session";
 import { isWithinExpiration } from "./utils/date";
 import { generateRandomString } from "./utils/nanoid";
 
 export class Auth {
   public passwordHash = {
-    generate: hashA2,
-    validate: validateA2Hash,
+    generate: hashPassword,
+    validate: validateHash,
   };
 
   private sessionExpiresIn = {

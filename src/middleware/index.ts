@@ -6,6 +6,5 @@ export function onRequest(context, next) {
 
   console.log("bam middleware");
 
-  // return a Response or the result of calling `next()`
   return next();
 }
