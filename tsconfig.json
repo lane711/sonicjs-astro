@@ -3,6 +3,9 @@
   "compilerOptions": {
     "jsx": "react-jsx",
     "jsxImportSource": "react",
-    "module": "es2020"
+    "module": "es2020",
+    "paths": {
+      "services": ["./src/services"],
+    }
   }
 }
