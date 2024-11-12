@@ -1,11 +1,12 @@
 import {
-	validateSession,
-	setSessionTokenCookie,
-	deleteSessionTokenCookie
-} from "@services/session-cookies";
+	validateSessionToken,
+	createSession,
+	invalidateSession
+} from "@services/sessions";
 import { defineMiddleware } from "astro:middleware";
 
 export const onRequest = defineMiddleware(async (context, next) => {
+	const db = context.locals.runtime.env.D1
 	const token = context.cookies.get("session")?.value ?? null;
 	if (token === null) {
 		context.locals.user = null;
@@ -13,11 +14,11 @@ export const onRequest = defineMiddleware(async (context, next) => {
 		return next();
 	}
 
-	const { session, user } = await validateSessionToken(token);
+	const { session, user } = await validateSessionToken(db, token);
 	if (session !== null) {
-		setSessionTokenCookie(context, token, session.expiresAt);
+		createSession(db,  token, session.user_id);
 	} else {
-		deleteSessionTokenCookie(context);
+		invalidateSession(db, session.id);
 	}
 
 	context.locals.session = session;

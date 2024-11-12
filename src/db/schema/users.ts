@@ -1,10 +1,10 @@
 import { sqliteTable, text } from "drizzle-orm/sqlite-core";
-import { relations } from "drizzle-orm";
+import { relations, type InferSelectModel } from "drizzle-orm";
 import { auditSchema } from "./audit";
 import * as posts from "./posts";
 import * as comments from "./comments";
-import * as userKeys from "./userKeys";
-import * as userSessions from "./userSessions";
+// import * as userKeys from "./userKeys";
+// import * as userSessions from "./userSessions";
 import { isAdmin, isAdminOrEditor, isAdminOrUser } from "../config-helpers";
 import type { ApiConfig } from "../routes";
 export const tableName = "users";
@@ -26,11 +26,14 @@ export const table = sqliteTable(tableName, {
   ...auditSchema,
 });
 
+export type User = InferSelectModel<typeof table>;
+
+
 export const relation = relations(table, ({ many }) => ({
   posts: many(posts.table),
   comments: many(comments.table),
-  keys: many(userKeys.table),
-  sessions: many(userSessions.table),
+  // keys: many(userKeys.table),
+  // sessions: many(userSessions.table),
 }));
 
 export const access: ApiConfig["access"] = {
@@ -64,3 +67,4 @@ export const access: ApiConfig["access"] = {
     },
   },
 };
+

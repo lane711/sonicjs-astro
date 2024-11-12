@@ -5,7 +5,9 @@
     "jsxImportSource": "react",
     "module": "es2020",
     "paths": {
-      "services": ["./src/services"],
+      "@services/*": ["./src/services/*"],
+      "@schema/*": ["./src/db/schema/*"],
+
     }
   }
 }
