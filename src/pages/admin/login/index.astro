@@ -1,30 +1,50 @@
 ---
+import { convertFormDataToObject } from '@services/utils';
 import LoginLayout from '../layouts/admin-login.astro'
 
----
-<!--
-  This example requires some changes to your config:
-  
-  ```
-  // tailwind.config.js
-  module.exports = {
-    // ...
-    plugins: [
-      // ...
-      require('@tailwindcss/forms'),
-    ],
-  }
-  ```
--->
-<!--
-  This example requires updating your template:
+if (Astro.request.method === "POST") {
+  try {
+    const formData = await Astro.request.formData();
+    const data = convertFormDataToObject(formData);
+    var json = JSON.stringify(data);
 
-  ```
-  <html class="h-full bg-gray-900">
-  <body class="h-full">
-  ```
--->
-  <LoginLayout title="Login: SonicJs Admin"> 
+    //send email
+    // sendEmail({
+    //   to: data.email,
+    //   subject: "Welcome to SonicJs",
+    //   html: "You have successfully registered your admin account",
+    // });
+
+    //now post to our own post api
+    const baseURl = Astro.request.url.split("/admin/")[0];
+    // const postUrl = `${baseURl}/api/v1/${tableConfigRecord.route}/${id}`;
+    try {
+      // const response = await fetch(postUrl, {
+      //   method: "PUT",
+      //   body: json,
+      // });
+      // if (!response.ok) {
+      //   throw new Error("Network response was not ok");
+      // }
+      // const result = await response.json();
+      // console.log("Success:", result);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+
+    // Do something with the data
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(error.message);
+    }
+  } finally {
+    return Astro.redirect(`/admin/tables/${tableConfigRecord.route}`);
+  }
+}
+
+---
+
+<LoginLayout title="Login: SonicJs Admin"> 
 <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-sm">
       <img class="mx-auto h-10 w-auto" src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=500" alt="Your Company">

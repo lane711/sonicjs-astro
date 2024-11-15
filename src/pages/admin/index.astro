@@ -2,6 +2,11 @@
 // import { desc } from "drizzle-orm";
 // import { drizzle } from "drizzle-orm/d1";
 // import { linkShare } from "../db/schema";
+
+if (Astro.locals.user === null) {
+    return Astro.redirect("/admin/login")
+}
+
 const data = Astro.locals;
 data.user = {};
 

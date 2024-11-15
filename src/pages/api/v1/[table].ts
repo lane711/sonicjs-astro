@@ -13,6 +13,7 @@ import {
 } from "../../../auth/auth-helpers";
 import { deleteRecord, getRecords, insertRecord } from "../../../services/data";
 import { return204, return400, return404, return500 } from "../../../services/return-types";
+import bcrypt from 'bcrypt';
 
 
 
@@ -158,6 +159,10 @@ export const POST: APIRoute = async (context) => {
   content.data = await request.json();
   // const table = apiConfig.find((entry) => entry.route === route).table;
   // context.env.D1DATA = context.env.D1DATA;
+
+  if(content.data.password) {
+    content.data.password = await bcrypt.hash(content.data.password, 10);
+  }
 
   if (entry.hooks?.beforeOperation) {
     await entry.hooks.beforeOperation(content, "create", undefined, content);
