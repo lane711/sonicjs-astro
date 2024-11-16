@@ -22,17 +22,24 @@ export class Auth {
 
   private async generatePassword(password?: string | null) {
     const salt = generateRandomString(16);
-    return password ?
-        (
-          await this.passwordHash.generate({
-            password: password,
-            salt,
-            hash: this.config.password.hash,
-            iterations: this.config.password.iterations,
-            kdf: this.config.password.kdf
-          })
-        ).hashedPassword
+    const hash =
+      password ?
+        await this.passwordHash.generate({
+          password: password,
+          salt,
+          hash: this.config.password.hash,
+          iterations: this.config.password.iterations,
+          kdf: this.config.password.kdf
+        })
       : null;
+    if (hash) {
+      if (hash.kdf === 'pbkdf2') {
+        return `snc:$:${hash.hashedPassword}:$:${salt}:$:${hash.hash}:$:${hash.iterations}`;
+      } else {
+        return `lca:$:${hash.hashedPassword}`;
+      }
+    }
+    return null;
   }
 
   private async getDatabaseSessionAndUser(sessionId: Adapter.SId) {

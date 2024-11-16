@@ -185,6 +185,7 @@ export const validateHash = async (
       iterations: getIterations(iterations),
       hash
     });
+    console.log('bam', { dbHash, verifyHash, hashedPassword });
     return constantTimeEqual(verifyHash.hashedPassword, hashedPassword);
   } else {
     return await validateScryptHash(userPassword, dbHash.substring(4));
