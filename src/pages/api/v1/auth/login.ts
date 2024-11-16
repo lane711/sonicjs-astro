@@ -10,6 +10,7 @@ export const POST: APIRoute = async (context) => {
         // Get the body of the request
         const body = await context.request.json();
         const { email, password } = body;
+
         const token = login(context.locals.runtime.env.D1, email, password);
 
         console.log('body', body, email, password);

@@ -3,10 +3,10 @@ import { and, eq } from "drizzle-orm";
 import { tableSchemas } from "../db/routes";
 import qs from "qs";
 
-export async function getAllContent(db) {
-  const { results } = await db.prepare("SELECT * FROM users").all();
-  return results;
-}
+// export async function getAllContent(db) {
+//   const { results } = await db.prepare("SELECT * FROM users").all();
+//   return results;
+// }
 
 export async function getD1DataByTable(db, table, params) {
   const sql = generateSelectSql(table, params);

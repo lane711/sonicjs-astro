@@ -29,7 +29,7 @@ export async function createSession(
   const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
   const session: Session = {
     id: sessionId,
-    userId:  userId,
+    userId: userId,
     idleExpires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 60).getTime(),
     activeExpires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 60).getTime(),
     createdOn: new Date(Date.now()).getTime(),
