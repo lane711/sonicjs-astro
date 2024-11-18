@@ -1,24 +1,15 @@
-import { tableSchemas } from '../db/routes';
+import { schema, tableSchemas } from '../db/routes';
 import { drizzle } from 'drizzle-orm/d1';
 import { isNotNull } from 'drizzle-orm';
 // import { getRecords } from '../data/data';
 // import { AppContext as APIContext } from '../../server';
-import type { APIContext as AppContext } from "astro";
+import type { APIContext as AppContext } from 'astro';
 
 import type { SonicJSFilter, ApiConfig } from '../db/routes';
 
 export const hasUser = async (ctx: AppContext) => {
   const fn = async function () {
-    const db = drizzle(ctx.env.D1DATA, {
-      schema: {
-        users: tableSchemas.users.table,
-        usersRelations: tableSchemas.users.relation,
-        userKeys: tableSchemas.userKeys.table,
-        userKeysRelations: tableSchemas.userKeys.relation,
-        userSessions: tableSchemas.userSessions.table,
-        userSessionsRelations: tableSchemas.userSessions.relation
-      }
-    });
+    const db = drizzle(ctx.locals.runtime.env.D1, schema);
     const data = await db.query.users.findMany({
       with: {
         keys: {
