@@ -1,7 +1,7 @@
 ---
 import { apiConfig } from '../../../db/routes';
 import AdminLayout from '../layouts/admin-layout.astro';
-import Table from '../../../components/table';
+import TableComponent from '../../../components/table';
 import { getFieldDefinitions } from '../../../services/fields';
 import DeleteConfirmation from '../../../components/delete-confirmation';
 
@@ -11,5 +11,5 @@ const tableConfig = getFieldDefinitions(tableConfigRecord);
 ---
 
 <AdminLayout title=`SonicJs Admin` | {table} `>
-  <Table client:load tableConfig={tableConfig} />
+  <TableComponent client:load tableConfig={tableConfig} />
 </AdminLayout>
