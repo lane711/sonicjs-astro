@@ -175,6 +175,15 @@ export interface ApiConfig {
   fields?: {
     [field: string]:
       | {
+          type: 'id' | 'string[]';
+        }
+      | {
+          type: 'textField';
+        }
+      | {
+          type: 'textArea';
+        }
+      | {
           type: 'auto' | 'string[]';
         }
       | {
@@ -190,6 +199,9 @@ export interface ApiConfig {
         }
       | {
           type: 'quill';
+        }
+      | {
+          type: 'datetime';
         };
   };
 }

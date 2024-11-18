@@ -311,7 +311,7 @@ export async function updateRecord(d1, kv, data, params: Record<string, any>) {
   }
 }
 
-export async function deleteRecord(d1, kv, data) {
+export async function deleteRecord(d1, data) {
   const timestamp = new Date().getTime();
 
   try {

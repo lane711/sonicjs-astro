@@ -38,3 +38,9 @@ export const access: ApiConfig["access"] = {
     delete: isAdminOrEditor,
   },
 };
+
+export const fields: ApiConfig["fields"] = {
+  body:{ 
+    type:'textArea'
+  }
+};

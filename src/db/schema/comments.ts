@@ -77,5 +77,8 @@ export const hooks: ApiConfig['hooks'] = {
 export const fields: ApiConfig['fields'] = {
   tags: {
     type: 'string[]'
+  },
+  body: {
+    type: 'textArea'
   }
 };

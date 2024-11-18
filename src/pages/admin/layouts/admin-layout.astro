@@ -23,6 +23,21 @@ import { Image } from 'astro:assets';
   <!-- <link rel="stylesheet" href="style.css" /> -->
   <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
 
+  <script is:inline>
+
+    document.addEventListener('click', function(event) {
+      console.log('Click detected:', event);
+      const userMenu = document.querySelector('.user-menu');
+      userMenu.classList.add('hidden');
+    });
+
+    function toggleUserMenu() {
+        event.stopPropagation();
+      const userMenu = document.querySelector('.user-menu');
+      userMenu.classList.toggle('hidden');
+    }
+  </script>
+
 </head>
 <body class="h-full">
   <div>
@@ -409,7 +424,7 @@ import { Image } from 'astro:assets';
                 <li>
                   <!-- Current: "bg-gray-800 text-white", Default: "text-gray-400 hover:text-white hover:bg-gray-800" -->
                   <a
-                    href="#"
+                    href="/admin/tables/users"
                     class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
                   >
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -419,7 +434,7 @@ import { Image } from 'astro:assets';
                     <span class="truncate">Users</span>
                   </a>
                 </li>
-                <li>
+                <!-- <li>
                   <a
                     href="#"
                     class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
@@ -442,7 +457,7 @@ import { Image } from 'astro:assets';
                   
                     <span class="truncate">User Keys</span>
                   </a>
-                </li>
+                </li> -->
               </ul>
             </li>
 
@@ -454,7 +469,7 @@ import { Image } from 'astro:assets';
                 <li>
                   <!-- Current: "bg-gray-800 text-white", Default: "text-gray-400 hover:text-white hover:bg-gray-800" -->
                   <a
-                    href="#"
+                    href="/admin/cache"
                     class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
                   >
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -467,8 +482,8 @@ import { Image } from 'astro:assets';
                 </li>
                 <li>
                   <a
-                    href="#"
-                    class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
+                  href="/admin/cache"
+                  class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
                   >
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M8.242 5.992h12m-12 6.003H20.24m-12 5.999h12M4.117 7.495v-3.75H2.99m1.125 3.75H2.99m1.125 0H5.24m-1.92 2.577a1.125 1.125 0 1 1 1.591 1.59l-1.83 1.83h2.16M2.99 15.745h1.125a1.125 1.125 0 0 1 0 2.25H3.74m0-.002h.375a1.125 1.125 0 0 1 0 2.25H2.99" />
@@ -480,8 +495,8 @@ import { Image } from 'astro:assets';
                 </li>
                 <li>
                   <a
-                    href="#"
-                    class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
+                  href="/admin/cache"
+                  class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
                   >
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                     <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
@@ -551,7 +566,7 @@ import { Image } from 'astro:assets';
         <div class="h-6 w-px bg-gray-900/10 lg:hidden" aria-hidden="true"></div>
 
         <div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
-          <form class="relative flex flex-1" action="#" method="GET">
+          <!-- <form class="relative flex flex-1" action="#" method="GET">
             <label for="search-field" class="sr-only">Search</label>
             <svg
               class="pointer-events-none absolute inset-y-0 left-0 h-full w-5 text-gray-400"
@@ -571,9 +586,11 @@ import { Image } from 'astro:assets';
               type="search"
               name="search"
             />
-          </form>
+          </form> -->
+          <!-- // Spacer -->
+          <div class="flex-1"></div> 
           <div class="flex items-center gap-x-4 lg:gap-x-6">
-            <button
+            <!-- <button
               type="button"
               class="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500"
             >
@@ -592,7 +609,7 @@ import { Image } from 'astro:assets';
                   d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"
                 ></path>
               </svg>
-            </button>
+            </button> -->
 
             <!-- Separator -->
             <div
@@ -609,6 +626,7 @@ import { Image } from 'astro:assets';
                 id="user-menu-button"
                 aria-expanded="false"
                 aria-haspopup="true"
+                onclick="toggleUserMenu()"
               >
                 <span class="sr-only">Open user menu</span>
                 <img
@@ -646,11 +664,12 @@ import { Image } from 'astro:assets';
                     To: "transform opacity-0 scale-95"
                 -->
               <div
-                class="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none"
+                class="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none user-menu hidden"
                 role="menu"
                 aria-orientation="vertical"
                 aria-labelledby="user-menu-button"
                 tabindex="-1"
+
               >
                 <!-- Active: "bg-gray-50", Not Active: "" -->
                 <a
@@ -680,4 +699,5 @@ import { Image } from 'astro:assets';
       </main>
     </div>
   </div>
+
 </body>
