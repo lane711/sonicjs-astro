@@ -7,6 +7,15 @@ export const return200 = (data = []) => {
   );
 };
 
+export const return200WithObject = (object) => {
+  return new Response(
+    JSON.stringify(
+      object,
+    ),
+    { status: 200 }
+  );
+};
+
 export const return201 = (message = "Record Created") => {
   return new Response(
     JSON.stringify({

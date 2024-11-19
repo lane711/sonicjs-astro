@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 const saltRounds = 10;
-import { createSession, generateSessionToken } from "./sessions";
+import { createSession, generateSessionToken, invalidateUserSessions } from "./sessions";
 import { eq } from "drizzle-orm";
 import { drizzle, type DrizzleD1Database } from "drizzle-orm/d1";
 import { table as userTable } from "@schema/users";
@@ -22,7 +22,11 @@ export const login = async (
 
   if (isPasswordCorrect) {
     const token = generateSessionToken();
+    // TODO: invalidate all user sessions could be async if we send session id that we don't want to invalidate
+    await invalidateUserSessions(d1, user.id)
+
     const session = createSession(d1, token, user.id);
+
     return token;
   }
 };

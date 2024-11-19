@@ -1,5 +1,5 @@
 import { login } from "@services/auth";
-import { return200 } from "@services/return-types";
+import { return200, return200WithObject, return500 } from "@services/return-types";
 import type { APIRoute } from "astro";
 
 export const POST: APIRoute = async (context) => {
@@ -11,17 +11,11 @@ export const POST: APIRoute = async (context) => {
         const body = await context.request.json();
         const { email, password } = body;
 
-        const token = login(context.locals.runtime.env.D1, email, password);
+        const token = await login(context.locals.runtime.env.D1, email, password);
 
         console.log('body', body, email, password);
+        return return200WithObject({bearer: token});
     }
-    // api.post(`/${entry.route}`, async (ctx) => {
-    const { env } = context.locals.runtime;
-  
-    const params = context.params;
 
-    console.log('params', params);
-
-
-    return return200({ message: "POST" });
+    return return500();
 };
