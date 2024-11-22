@@ -1,6 +1,7 @@
 ---
 import { convertFormDataToObject } from '@services/utils';
 import LoginLayout from '../layouts/admin-login.astro'
+import { setSessionTokenCookie } from '@services/cookies';
 
 if (Astro.request.method === "POST") {
   try {
@@ -17,17 +18,21 @@ if (Astro.request.method === "POST") {
 
     //now post to our own post api
     const baseURl = Astro.request.url.split("/admin/")[0];
-    // const postUrl = `${baseURl}/api/v1/${tableConfigRecord.route}/${id}`;
+    const postUrl = `${baseURl}/api/v1/auth/login`;
     try {
-      // const response = await fetch(postUrl, {
-      //   method: "PUT",
-      //   body: json,
-      // });
+      const response = await fetch(postUrl, {
+        headers: new Headers({'content-type': 'application/json'}),
+        method: "POST",
+        body: json,
+      });
       // if (!response.ok) {
       //   throw new Error("Network response was not ok");
       // }
-      // const result = await response.json();
-      // console.log("Success:", result);
+      const result = await response.json();
+      console.log("Success:", result);
+
+      //add auth cookie
+      setSessionTokenCookie(Astro, result.bearer, result.expires);
     } catch (error) {
       console.error("Error:", error);
     }
@@ -38,7 +43,7 @@ if (Astro.request.method === "POST") {
       console.error(error.message);
     }
   } finally {
-    return Astro.redirect(`/admin/tables/${tableConfigRecord.route}`);
+    return Astro.redirect(`/admin`);
   }
 }
 

@@ -11,8 +11,6 @@ export const GET: APIRoute = async (context) => {
 
   token = token.replace("Bearer ", "");
 
-  console.log("token", token);
-
   if (!token) {
     return return401();
   }
@@ -25,7 +23,6 @@ export const GET: APIRoute = async (context) => {
   if(validSession.session === null || validSession.user === null) {
     return return401();
   }
-  console.log("validSession", validSession);
 
   return return200WithObject(validSession);
 };
