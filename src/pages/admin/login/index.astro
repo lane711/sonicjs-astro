@@ -6,7 +6,6 @@ const redirectTo = '/admin';
 
 if (Astro.request.method === 'POST') {
   try {
-    console.log('bam');
     const data = await Astro.request.formData();
     const email = data.get('email');
     const password = data.get('password');

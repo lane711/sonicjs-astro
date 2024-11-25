@@ -1,5 +1,7 @@
+/// <reference path="../.astro/types.d.ts" />
 /// <reference types="astro/client" />
 
+type UserSchema = import('@/db/schema/users').UserSelectSchema;
 type Auth = import('./auth/auth').Auth;
 
 // use a default runtime configuration (advanced mode).
@@ -13,7 +15,7 @@ type ENV = {
 
 declare namespace App {
   interface Locals extends Runtime {
-    user: {};
+    user: UserSchema | null;
     auth: Auth;
   }
 }

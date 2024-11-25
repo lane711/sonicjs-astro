@@ -65,3 +65,5 @@ export const access: ApiConfig['access'] = {
     }
   }
 };
+
+export type UserSelectSchema = typeof table.$inferSelect;
