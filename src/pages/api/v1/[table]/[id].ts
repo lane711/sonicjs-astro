@@ -162,7 +162,7 @@ export const PUT: APIRoute = async (context) => {
   // }
 
   // const route = context.request.path.split('/')[2];
-  const table = apiConfig.find((entry) => entry.route === route).table;
+  const table = apiConfig?.find((entry) => entry?.route === route)?.table;
 
   content.table = table;
   content.id = params.id;
@@ -171,7 +171,7 @@ export const PUT: APIRoute = async (context) => {
     content.data = await filterUpdateFieldAccess(
       entry.access?.fields,
       context,
-      params.id,
+      params.id!,
       content.data
     );
     if (entry?.hooks?.resolveInput?.update) {
@@ -188,7 +188,13 @@ export const PUT: APIRoute = async (context) => {
       params
     );
     if (entry?.hooks?.afterOperation) {
-      await entry.hooks.afterOperation(context, 'update', id, content, result);
+      await entry.hooks.afterOperation(
+        context,
+        'update',
+        params.id!,
+        content,
+        result
+      );
     }
     return return200(result.data);
   } catch (error) {

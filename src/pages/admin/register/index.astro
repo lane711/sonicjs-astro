@@ -1,6 +1,8 @@
 ---
+import { count } from 'drizzle-orm';
 import LoginLayout from '../layouts/admin-login.astro';
 
+import { table as userSchema } from '@/db/schema/users';
 const errors = { username: '', email: '', password: '' };
 if (Astro.request.method === 'POST') {
   try {
@@ -24,6 +26,12 @@ if (Astro.request.method === 'POST') {
     email = email as string;
     const hasErrors = Object.values(errors).some((msg) => msg);
     if (!hasErrors) {
+      const usersCount = await Astro.locals.auth.config.db
+        .select({ count: count() })
+        .from(userSchema);
+
+      console.log('bam', usersCount);
+
       await Astro.locals.auth.createUser({
         key: {
           password: password as string,
@@ -34,10 +42,10 @@ if (Astro.request.method === 'POST') {
           email,
           firstName: typeof firstName === 'string' ? firstName : '',
           lastName: typeof lastName === 'string' ? lastName : '',
-          role: 'admin'
+          role: usersCount[0].count === 0 ? 'admin' : 'user'
         }
       });
-      // return Astro.redirect('/login');
+      return Astro.redirect('/auth/login');
     }
   } catch (error) {
     if (error instanceof Error) {

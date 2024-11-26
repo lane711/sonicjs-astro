@@ -7,9 +7,16 @@ import DeleteConfirmation from '../../../components/delete-confirmation';
 
 const { table } = Astro.params;
 const tableConfigRecord = apiConfig.find((t) => t.route === table);
-const tableConfig = getFieldDefinitions(tableConfigRecord);
+if (!tableConfigRecord) {
+  return;
+}
+const formFields = getFieldDefinitions(tableConfigRecord);
 ---
 
 <AdminLayout title=`SonicJs Admin` | {table} `>
-  <TableComponent client:load tableConfig={tableConfig} />
+  <TableComponent
+    client:load
+    tableConfig={tableConfigRecord}
+    formFields={formFields}
+  />
 </AdminLayout>

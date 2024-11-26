@@ -6,6 +6,9 @@ import FormComponent from './form-component.astro';
 
 const { form } = Astro.params;
 const tableConfigRecord = apiConfig.find((t) => t.route === form);
+if (!tableConfigRecord) {
+  return;
+}
 
 // const definitionObject = tableConfig.definition;
 
@@ -23,7 +26,6 @@ const tableConfigRecord = apiConfig.find((t) => t.route === form);
 //     return { key, type: "textField" };
 //   }
 // });
-const tableConfig = getFieldDefinitions(tableConfigRecord);
 
 if (Astro.request.method === 'POST') {
   try {
@@ -44,7 +46,7 @@ if (Astro.request.method === 'POST') {
 
     //now post to our own post api
     const baseURl = Astro.request.url.split('/admin/')[0];
-    const postUrl = `${baseURl}/api/v1/${tableConfigRecord?.route}`;
+    const postUrl = `${baseURl}/api/v1/${tableConfigRecord.route}`;
     try {
       const response = await fetch(postUrl, {
         method: 'POST',

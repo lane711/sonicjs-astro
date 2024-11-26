@@ -1,4 +1,6 @@
-export const getFieldDefinitions = (tableConfig: any, record?: any) => {
+import type { ApiConfig } from '@/db/routes';
+
+export const getFieldDefinitions = (tableConfig: ApiConfig, record?: any) => {
   const definitionObject = tableConfig.definition;
 
   // Convert the nested objects to an array
@@ -12,13 +14,16 @@ export const getFieldDefinitions = (tableConfig: any, record?: any) => {
     const fieldType = fieldOverride ? fieldOverride.type : 'textField';
 
     if (record && record[key]) {
-      return { key, type: fieldType, value: record[key] };
+      return {
+        key,
+        type: fieldType,
+        value: record[key],
+        readonly: key === 'userId'
+      };
     } else {
-      return { key, type: fieldType };
+      return { key, type: fieldType, readonly: key === 'userId' };
     }
   });
 
-  tableConfig.formFields = formFields;
-  // console.log("formFields", formFields);
-  return tableConfig;
+  return formFields;
 };

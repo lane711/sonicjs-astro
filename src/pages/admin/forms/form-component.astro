@@ -4,10 +4,17 @@ import { getFieldDefinitions } from '../../../services/fields';
 import TextField from './fields/text-field.astro';
 import TextArea from './fields/text-area.astro';
 
-const { record, title = 'Edit' } = Astro.props;
+let { record, title = 'Edit' } = Astro.props;
 const { form } = Astro.params;
 const tableConfigRecord = apiConfig.find((t) => t.route === form);
-const tableConfig = getFieldDefinitions(tableConfigRecord, record);
+if (!tableConfigRecord) {
+  return;
+}
+record ??= {};
+if (!record.userId) {
+  record.userId = Astro.locals.user?.id;
+}
+const formFields = getFieldDefinitions(tableConfigRecord, record);
 ---
 
 <form method='post'>
@@ -21,7 +28,7 @@ const tableConfig = getFieldDefinitions(tableConfigRecord, record);
       <div class='mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6'>
         <div class='sm:col-span-4'>
           {
-            tableConfig.formFields.map((field: any) => (
+            formFields.map((field: any) => (
               <div class='mt-4'>
                 <TextField field={field} />
                 <TextArea field={field} />

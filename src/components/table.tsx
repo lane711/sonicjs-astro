@@ -31,7 +31,13 @@ const fallbackData = [
   }
 ];
 
-function Table({ tableConfig }: { tableConfig: any }) {
+function Table({
+  tableConfig,
+  formFields
+}: {
+  tableConfig: any;
+  formFields: any;
+}) {
   // debugger;
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
@@ -46,13 +52,7 @@ function Table({ tableConfig }: { tableConfig: any }) {
 
   const pageSize = 18;
 
-  // const columns = Object.entries(tableConfig.formFields).map(([key, value]) =>
-  //   columnHelper.accessor(key, {
-  //     header: value.header || key.charAt(0).toUpperCase() + key.slice(1),
-  //     cell: (info) => truncateText(info.getValue(), 30),
-  //   })
-  // );
-  const columns = tableConfig.formFields.map((formField: any) => {
+  const columns = formFields.map((formField: any) => {
     return columnHelper.accessor(formField.key, {
       header: formField.key.charAt(0).toUpperCase() + formField.key.slice(1),
       cell: (info) =>
