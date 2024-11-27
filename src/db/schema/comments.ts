@@ -61,14 +61,14 @@ export const hooks: ApiConfig['hooks'] = {
     create: (ctx, data) => {
       return data;
       // if (ctx.get('user')?.userId) {
-      //   data.userId = ctx.get('user').userId;
+      //   data.userId = ctx?.locals?.user?.id;
       // }
       // return data;
     },
     update: (ctx, id, data) => {
       return data;
       // if (ctx.get('user')?.userId) {
-      //   data.userId = ctx.get('user').userId;
+      //   data.userId = ctx?.locals?.user?.id;
       // }
       // return data;
     }

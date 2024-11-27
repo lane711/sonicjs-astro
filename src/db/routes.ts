@@ -27,7 +27,7 @@ export interface ApiConfig {
   // id: the id of the document the operation is being performed on, could be undefined if reading multiple rows
   // data: the data passed to the operation
   // doc: the document being requested/updated/deleted
-  // Get the user: ctx.get("user")
+  // Get the user: ctx?.locals?.user
   // Get the session: ctx.get("session")
   // By default, operations are always allowed.
   // false will result in a 403 UNAUTHORIZED response.

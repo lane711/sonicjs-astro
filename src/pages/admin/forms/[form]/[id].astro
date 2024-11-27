@@ -30,10 +30,6 @@ const getRecord = async (table, id) => {
 
 const record = await getRecord(tableConfigRecord.route, id);
 
-console.log('bam', {
-  tableConfigRecord,
-  record
-});
 if (Astro.request.method === 'POST') {
   try {
     const formData = await Astro.request.formData();

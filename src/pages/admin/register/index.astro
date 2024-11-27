@@ -30,8 +30,6 @@ if (Astro.request.method === 'POST') {
         .select({ count: count() })
         .from(userSchema);
 
-      console.log('bam', usersCount);
-
       await Astro.locals.auth.createUser({
         key: {
           password: password as string,

@@ -1,8 +1,7 @@
 import type { APIContext as AppContext } from 'astro';
 
-//TODO: fix gets
 export function isAdminOrEditor(ctx?: AppContext) {
-  const user = ctx?.locals.user;
+  const user = ctx?.locals?.user;
   const role = user?.role?.toLowerCase() || '';
   if (role === 'admin' || role === 'editor') {
     return true;
@@ -16,6 +15,7 @@ export function isAdmin(ctx?: AppContext) {
   if (role === 'admin') {
     return true;
   }
+  return false;
 }
 
 export function isUser(ctx?: AppContext, id?: string) {

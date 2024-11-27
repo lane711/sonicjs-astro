@@ -119,7 +119,6 @@ export async function updateD1Data(
       }
     }
   }
-  console.log('bam', { data: data.data, eqArgs, params });
   let result = await db
     .update(repo)
     .set(data.data)
@@ -127,7 +126,6 @@ export async function updateD1Data(
     .returning({ id: repo.id })
     .values();
 
-  console.log('bam update result', result);
   // let result = await db
   // .update(repo)
   // .set(data)
@@ -182,7 +180,7 @@ export function whereClauseBuilder(filters: any) {
     if (Array.isArray(filter[condition])) {
       // AND (country = 'usa' OR contry = 'uk')
       const arr = filter[condition];
-      let multiArr = [];
+      let multiArr: string[] = [];
       for (const prop of arr) {
         multiArr.push(`${key} = '${prop}'`);
       }

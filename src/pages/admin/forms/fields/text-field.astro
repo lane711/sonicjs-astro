@@ -20,7 +20,7 @@ const { field } = Astro.props;
             value={field.value}
             disabled={field.disabled}
             readonly={field.readonly}
-            class=`flex-1 border-0 bg-transparent py-1.5 pl-2 text-white focus:ring-0 sm:text-sm sm:leading-6 disabled:bg-black/30 ${field.readonly ? 'bg-black/30' : ''}`
+            class=`flex-1 border-0 py-1.5 pl-2 text-white focus:ring-0 sm:text-sm sm:leading-6 disabled:bg-black/30 ${field.readonly ? 'bg-black/30' : 'bg-transparent'}`
             placeholder=''
           />
         </div>

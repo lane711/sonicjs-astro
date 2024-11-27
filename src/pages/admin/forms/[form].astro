@@ -50,7 +50,12 @@ if (Astro.request.method === 'POST') {
     try {
       const response = await fetch(postUrl, {
         method: 'POST',
-        body: json
+        body: json,
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          Cookie: Astro.request.headers.get('cookie') || ''
+        }
       });
 
       if (!response.ok) {

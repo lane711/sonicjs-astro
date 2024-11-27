@@ -122,11 +122,14 @@ function Table({
 
   useEffect(() => {
     if (confirmDelete) {
-      deleteData(recordToDelete);
-      console.log('record deleted');
-      setConfirmDelete(false);
-      //redirect to table
-      window.location.href = `/admin/tables/${tableConfig.route}`;
+      async function del() {
+        await deleteData(recordToDelete);
+        console.log('record deleted');
+        setConfirmDelete(false);
+        //redirect to table
+        window.location.href = `/admin/tables/${tableConfig.route}`;
+      }
+      del();
     }
   }, [confirmDelete]);
 
@@ -140,14 +143,19 @@ function Table({
     }
   };
 
-  const deleteData = (id: string | null) => {
+  const deleteData = async (id: string | null) => {
     if (id) {
       const path = `/api/v1/${tableConfig.route}/${id}`;
 
       // const path = `/api/v1/${tableConfig.route}`;
 
-      fetch(path, {
-        method: 'DELETE'
+      await fetch(path, {
+        method: 'DELETE',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },
+        credentials: 'same-origin'
       })
         .then((res) => res.text()) // or res.json()
         .then((res) => console.log(res));
