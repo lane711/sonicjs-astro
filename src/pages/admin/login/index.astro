@@ -1,65 +1,165 @@
 ---
-import LoginLayout from '../layouts/admin-login.astro'
+import LoginLayout from '../layouts/admin-login.astro';
 
----
-<!--
-  This example requires some changes to your config:
-  
-  ```
-  // tailwind.config.js
-  module.exports = {
-    // ...
-    plugins: [
-      // ...
-      require('@tailwindcss/forms'),
-    ],
+const errors = { email: '', password: '' };
+const redirectTo = '/admin';
+
+if (Astro.request.method === 'POST') {
+  try {
+    const data = await Astro.request.formData();
+    const email = data.get('email');
+    const password = data.get('password');
+
+    console.log({ email, password });
+
+    // Basic validation
+    if (typeof email !== 'string' || !email.includes('@')) {
+      errors.email = 'Please enter a valid email address';
+    }
+    if (typeof password !== 'string' || password.length < 1) {
+      errors.password = 'Password is required';
+    }
+
+    const hasErrors = Object.values(errors).some((msg) => msg);
+
+    if (!hasErrors) {
+      try {
+        // Get the user key
+        const key = await Astro.locals.auth.useKey({
+          provider: 'EMAIL',
+          providerUserId: email as string,
+          password: password as string
+        });
+
+        if (key) {
+          // Get associated user
+          const user = await Astro.locals.auth.getUser(key.user_id);
+
+          if (user) {
+            // Create new session
+            const session = await Astro.locals.auth.createSession({
+              userId: user.id,
+              attributes: {}
+            });
+
+            // Set session cookie
+            Astro.cookies.set('session', session.session.id, {
+              path: '/',
+              secure: true,
+              httpOnly: true,
+              sameSite: 'lax',
+              maxAge: 60 * 60 * 24 * 14 // 14 days
+            });
+
+            return Astro.redirect(redirectTo);
+          } else {
+            errors.password = 'Invalid email or password';
+          }
+        }
+      } catch (e) {
+        if (e instanceof Error) {
+          console.error(e.message);
+          console.error(e.cause);
+          console.error(e.stack);
+          errors.password = 'Invalid email or password';
+        }
+      }
+    }
+  } catch (e) {
+    if (e instanceof Error) {
+      console.error(e.message);
+      console.error(e.cause);
+      console.error(e.stack);
+      console.error(e.message);
+    }
   }
-  ```
--->
-<!--
-  This example requires updating your template:
+}
+---
 
-  ```
-  <html class="h-full bg-gray-900">
-  <body class="h-full">
-  ```
--->
-  <LoginLayout title="Login: SonicJs Admin"> 
-<div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
-    <div class="sm:mx-auto sm:w-full sm:max-w-sm">
-      <img class="mx-auto h-10 w-auto" src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=500" alt="Your Company">
-      <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-white">Sign in to your account</h2>
+<LoginLayout title='Login: SonicJs Admin'>
+  <div class='flex min-h-full flex-col justify-center px-6 py-12 lg:px-8'>
+    <div class='sm:mx-auto sm:w-full sm:max-w-sm'>
+      <img
+        class='mx-auto h-10 w-auto'
+        src='https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=500'
+        alt='Your Company'
+      />
+      <h2
+        class='mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-white'
+      >
+        Sign in to your account
+      </h2>
     </div>
-  
-    <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-      <form class="space-y-6" action="#" method="POST">
+
+    <div class='mt-10 sm:mx-auto sm:w-full sm:max-w-sm'>
+      <form class='space-y-6' method='POST'>
         <div>
-          <label for="email" class="block text-sm font-medium leading-6 text-white">Email address</label>
-          <div class="mt-2">
-            <input id="email" name="email" type="email" autocomplete="email" required class="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6">
+          <label
+            for='email'
+            class='block text-sm font-medium leading-6 text-white'
+            >Email address</label
+          >
+          {errors.email && <p class='text-red-500 text-sm'>{errors.email}</p>}
+          <div class='mt-2'>
+            <input
+              id='email'
+              name='email'
+              type='email'
+              autocomplete='email'
+              required
+              class='block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6'
+            />
           </div>
         </div>
-  
+
         <div>
-          <div class="flex items-center justify-between">
-            <label for="password" class="block text-sm font-medium leading-6 text-white">Password</label>
-            <div class="text-sm">
-              <a href="#" class="font-semibold text-indigo-400 hover:text-indigo-300">Forgot password?</a>
+          <div class='flex items-center justify-between'>
+            <label
+              for='password'
+              class='block text-sm font-medium leading-6 text-white'
+              >Password</label
+            >
+            <div class='text-sm'>
+              <a
+                href='/admin/forgot-password'
+                class='font-semibold text-indigo-400 hover:text-indigo-300'
+                >Forgot password?</a
+              >
             </div>
           </div>
-          <div class="mt-2">
-            <input id="password" name="password" type="password" autocomplete="current-password" required class="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6">
+          {
+            errors.password && (
+              <p class='text-red-500 text-sm'>{errors.password}</p>
+            )
+          }
+          <div class='mt-2'>
+            <input
+              id='password'
+              name='password'
+              type='password'
+              autocomplete='current-password'
+              required
+              class='block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6'
+            />
           </div>
         </div>
-  
+
         <div>
-          <button type="submit" class="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">Sign in</button>
+          <button
+            type='submit'
+            class='flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500'
+            >Sign in</button
+          >
         </div>
       </form>
-  
-      <p class="mt-10 text-center text-sm text-gray-400">
+
+      <p class='mt-10 text-center text-sm text-gray-400'>
         Not a member?
-        <a href="#" class="font-semibold leading-6 text-indigo-400 hover:text-indigo-300">Start a 14 day free trial</a>
+        <a
+          href='/admin/register'
+          class='font-semibold leading-6 text-indigo-400 hover:text-indigo-300'
+          >Register now</a
+        >
       </p>
     </div>
   </div>

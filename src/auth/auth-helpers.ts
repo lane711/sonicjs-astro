@@ -1,24 +1,15 @@
-import { tableSchemas } from '../db/routes';
+import { schema, tableSchemas } from '../db/routes';
 import { drizzle } from 'drizzle-orm/d1';
 import { isNotNull } from 'drizzle-orm';
-// import { getRecords } from '../data/data';
 // import { AppContext as APIContext } from '../../server';
-import type { APIContext as AppContext } from "astro";
+import type { APIContext as AppContext } from 'astro';
 
 import type { SonicJSFilter, ApiConfig } from '../db/routes';
+import { getRecords } from '@/services/data';
 
 export const hasUser = async (ctx: AppContext) => {
   const fn = async function () {
-    const db = drizzle(ctx.env.D1DATA, {
-      schema: {
-        users: tableSchemas.users.table,
-        usersRelations: tableSchemas.users.relation,
-        userKeys: tableSchemas.userKeys.table,
-        userKeysRelations: tableSchemas.userKeys.relation,
-        userSessions: tableSchemas.userSessions.table,
-        userSessionsRelations: tableSchemas.userSessions.relation
-      }
-    });
+    const db = drizzle(ctx.locals.runtime.env.D1, schema);
     const data = await db.query.users.findMany({
       with: {
         keys: {
@@ -104,16 +95,54 @@ async function getAccessControlResult(
   }
   return authorized;
 }
+type OperationCreate = NonNullable<
+  NonNullable<NonNullable<ApiConfig['access']>['operation']>['create']
+>;
 
+type OperationRead = NonNullable<
+  NonNullable<NonNullable<ApiConfig['access']>['operation']>['read']
+>;
+type OperationUpdate = NonNullable<
+  NonNullable<NonNullable<ApiConfig['access']>['operation']>['update']
+>;
+type OperationDelete = NonNullable<
+  NonNullable<NonNullable<ApiConfig['access']>['operation']>['delete']
+>;
+
+type FilterRead = NonNullable<
+  NonNullable<NonNullable<ApiConfig['access']>['filter']>['read']
+>;
+
+type FilterUpdate = NonNullable<
+  NonNullable<NonNullable<ApiConfig['access']>['filter']>['update']
+>;
+
+type FilterDelete = NonNullable<
+  NonNullable<NonNullable<ApiConfig['access']>['filter']>['delete']
+>;
+
+type ItemRead = NonNullable<
+  NonNullable<NonNullable<ApiConfig['access']>['item']>['read']
+>;
+
+type ItemUpdate = NonNullable<
+  NonNullable<NonNullable<ApiConfig['access']>['item']>['update']
+>;
+
+type ItemDelete = NonNullable<
+  NonNullable<NonNullable<ApiConfig['access']>['item']>['delete']
+>;
+type AccessFields = NonNullable<ApiConfig['access']>['fields'];
 export async function getOperationCreateResult(
-  create: ApiConfig['access']['operation']['create'],
+  create: OperationCreate,
   ctx: AppContext,
   data: any
 ) {
   return !!(await getAccessControlResult(create, ctx, data));
 }
+
 export async function getOperationReadResult(
-  read: ApiConfig['access']['operation']['read'],
+  read: OperationRead,
   ctx: AppContext,
   id: string
 ) {
@@ -121,7 +150,7 @@ export async function getOperationReadResult(
 }
 
 export async function getOperationUpdateResult(
-  update: ApiConfig['access']['operation']['update'],
+  update: OperationUpdate,
   ctx: AppContext,
   id: string,
   data: any
@@ -130,7 +159,7 @@ export async function getOperationUpdateResult(
 }
 
 export async function getOperationDeleteResult(
-  del: ApiConfig['access']['operation']['delete'],
+  del: OperationDelete,
   ctx: AppContext,
   id: string
 ) {
@@ -138,7 +167,7 @@ export async function getOperationDeleteResult(
 }
 
 export async function getFilterReadResult(
-  read: ApiConfig['access']['filter']['read'],
+  read: FilterRead,
   ctx: AppContext,
   id: string
 ) {
@@ -146,7 +175,7 @@ export async function getFilterReadResult(
 }
 
 export async function getFilterUpdateResult(
-  update: ApiConfig['access']['filter']['update'],
+  update: FilterUpdate,
   ctx: AppContext,
   id: string,
   data: any
@@ -155,7 +184,7 @@ export async function getFilterUpdateResult(
 }
 
 export async function getFilterDeleteResult(
-  del: ApiConfig['access']['filter']['delete'],
+  del: FilterDelete,
   ctx: AppContext,
   id: string
 ) {
@@ -202,7 +231,7 @@ export async function getItemAccessControlResult(
 }
 
 export async function getItemReadResult(
-  read: ApiConfig['access']['item']['read'],
+  read: ItemRead,
   ctx: AppContext,
   docs: any
 ) {
@@ -221,7 +250,7 @@ export async function getItemReadResult(
 }
 
 export async function getItemUpdateResult(
-  update: ApiConfig['access']['item']['update'],
+  update: ItemUpdate,
   ctx: AppContext,
   id: string,
   data: any,
@@ -245,7 +274,7 @@ export async function getItemUpdateResult(
 }
 
 export async function getItemDeleteResult(
-  del: ApiConfig['access']['item']['delete'],
+  del: ItemDelete,
   ctx: AppContext,
   id: string,
   table: string
@@ -267,13 +296,13 @@ export async function getItemDeleteResult(
   return authorized;
 }
 export async function filterCreateFieldAccess<D = any>(
-  fields: ApiConfig['access']['fields'],
+  fields: AccessFields,
   ctx: AppContext,
   data: D
 ): Promise<D> {
   let result: D = data;
   if (fields) {
-    if (typeof data === 'object') {
+    if (typeof data === 'object' && data) {
       const newResult = {} as D;
       for (const key of Object.keys(data)) {
         const value = data[key];
@@ -302,7 +331,7 @@ export async function filterCreateFieldAccess<D = any>(
 }
 
 export async function filterReadFieldAccess<D = any>(
-  fields: ApiConfig['access']['fields'],
+  fields: AccessFields,
   ctx: AppContext,
   doc: D
 ): Promise<D> {
@@ -323,7 +352,7 @@ export async function filterReadFieldAccess<D = any>(
         }
         return acc;
       }, []) as D;
-    } else if (typeof doc === 'object') {
+    } else if (doc && typeof doc === 'object') {
       const newResult = {} as D;
       for (const key of Object.keys(doc)) {
         const value = doc[key];
@@ -350,14 +379,14 @@ export async function filterReadFieldAccess<D = any>(
 }
 
 export async function filterUpdateFieldAccess<D = any>(
-  fields: ApiConfig['access']['fields'],
+  fields: AccessFields,
   ctx: AppContext,
   id: string,
   data: D
 ): Promise<D> {
   let result: D = data;
   if (fields) {
-    if (typeof data === 'object') {
+    if (data && typeof data === 'object') {
       const newResult = {} as D;
       for (const key of Object.keys(data)) {
         const value = data[key];

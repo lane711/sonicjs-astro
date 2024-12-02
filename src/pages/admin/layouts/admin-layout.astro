@@ -635,10 +635,12 @@ import { Image } from 'astro:assets';
                   alt=""
                 />
                 <span class="hidden lg:flex lg:items-center">
+                  {Astro.locals.user &&
                   <span
                     class="ml-4 text-sm font-semibold leading-6 text-white"
-                    aria-hidden="true">Tom Cook</span
+                    aria-hidden="true">{Astro.locals.user.firstName} {Astro.locals.user.lastName}</span
                   >
+                  }
                   <svg
                     class="ml-2 h-5 w-5 text-gray-400"
                     viewBox="0 0 20 20"
@@ -680,7 +682,7 @@ import { Image } from 'astro:assets';
                   id="user-menu-item-0">Your profile</a
                 >
                 <a
-                  href="#"
+                  href="/admin/logout"
                   class="block px-3 py-1 text-sm leading-6 text-gray-900"
                   role="menuitem"
                   tabindex="-1"

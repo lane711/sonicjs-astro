@@ -1,16 +1,21 @@
 ---
-import { apiConfig } from "../../../db/routes";
-import AdminLayout from "../layouts/admin-layout.astro";
-import Table from "../../../components/table";
-import { getFieldDefinitions } from "../../../services/fields";
-import DeleteConfirmation from "../../../components/delete-confirmation";
+import { apiConfig } from '../../../db/routes';
+import AdminLayout from '../layouts/admin-layout.astro';
+import TableComponent from '../../../components/table';
+import { getFieldDefinitions } from '../../../services/fields';
 
 const { table } = Astro.params;
 const tableConfigRecord = apiConfig.find((t) => t.route === table);
-const tableConfig = getFieldDefinitions(tableConfigRecord);
-
+if (!tableConfigRecord) {
+  return;
+}
+const formFields = getFieldDefinitions(tableConfigRecord);
 ---
 
 <AdminLayout title=`SonicJs Admin` | {table} `>
-  <Table client:load tableConfig={tableConfig} />
+  <TableComponent
+    client:load
+    tableConfig={tableConfigRecord}
+    formFields={formFields}
+  />
 </AdminLayout>

@@ -1,14 +1,15 @@
-import * as users from "./schema/users";
-import * as posts from "./schema/posts";
-import * as comments from "./schema/comments";
-import * as categories from "./schema/categories";
-import * as categoriesToPosts from "./schema/categoriesToPosts";
-import * as userKeys from "./schema/userKeys";
-import * as userSessions from "./schema/userSessions";
+import * as users from './schema/users';
+import * as posts from './schema/posts';
+import * as comments from './schema/comments';
+import * as categories from './schema/categories';
+import * as categoriesToPosts from './schema/categoriesToPosts';
+import * as userKeys from './schema/userKeys';
+import * as userSessions from './schema/userSessions';
 
 // import { AppContext } from '../server';
-import { isAdminOrEditor } from "./config-helpers";
-import type { APIContext as AppContext } from "astro";
+import { isAdminOrEditor } from './config-helpers';
+import type { APIContext as AppContext } from 'astro';
+import type { SQLiteColumnBuilderBase } from 'drizzle-orm/sqlite-core';
 
 export type SonicJSConfig = {
   apiConfig: ApiConfig[];
@@ -17,7 +18,7 @@ export type SonicJSConfig = {
 export type SonicJSFilter = Record<string, any>;
 export interface ApiConfig {
   table: string;
-  definition: string;
+  definition: Record<string, SQLiteColumnBuilderBase>;
   route: string;
   name: string;
   icon: string;
@@ -26,7 +27,7 @@ export interface ApiConfig {
   // id: the id of the document the operation is being performed on, could be undefined if reading multiple rows
   // data: the data passed to the operation
   // doc: the document being requested/updated/deleted
-  // Get the user: ctx.get("user")
+  // Get the user: ctx?.locals?.user
   // Get the session: ctx.get("session")
   // By default, operations are always allowed.
   // false will result in a 403 UNAUTHORIZED response.
@@ -159,13 +160,13 @@ export interface ApiConfig {
     };
     beforeOperation?: (
       ctx: AppContext,
-      operation: "create" | "read" | "update" | "delete",
+      operation: 'create' | 'read' | 'update' | 'delete',
       id?: string,
       data?: any
     ) => void | Promise<void>;
     afterOperation?: (
       ctx: AppContext,
-      operation: "create" | "read" | "update" | "delete",
+      operation: 'create' | 'read' | 'update' | 'delete',
       id?: string,
       data?: any,
       result?: { data?: any } & Record<string, any>
@@ -174,33 +175,33 @@ export interface ApiConfig {
   fields?: {
     [field: string]:
       | {
-          type: "id" | "string[]";
+          type: 'id' | 'string[]';
         }
       | {
-          type: "textField";
-        }
-        | {
-          type: "textArea";
+          type: 'textField';
         }
       | {
-          type: "auto" | "string[]";
+          type: 'textArea';
         }
       | {
-          type: "file" | "file[]";
+          type: 'auto' | 'string[]';
+        }
+      | {
+          type: 'file' | 'file[]';
           bucket: (ctx: AppContext) => R2Bucket;
           path?: string | ((ctx: AppContext) => string);
         }
       | {
-          type: "password";
+          type: 'password';
         }
       | {
-          type: "ckeditor";
+          type: 'ckeditor';
         }
       | {
-          type: "quill";
+          type: 'quill';
         }
       | {
-          type: "datetime";
+          type: 'datetime';
         };
   };
 }
@@ -214,31 +215,49 @@ export const tableSchemas = {
   categories,
   categoriesToPosts,
   userKeys,
-  userSessions,
+  userSessions
+};
+
+export const schema = {
+  schema: {
+    users: users.table,
+    usersRelations: users.relation,
+    userKeys: userKeys.table,
+    userKeysRelations: userKeys.relation,
+    userSessions: userSessions.table,
+    userSessionsRelations: userSessions.relation,
+    posts: posts.table,
+    postsRelations: posts.relation,
+    comments: comments.table,
+    commentsRelations: comments.relation,
+    categories: categories.table,
+    categoriesToPosts: categoriesToPosts.table,
+    categoriesToPostsRelations: categoriesToPosts.relation
+  }
 };
 
 for (const key of Object.keys(tableSchemas)) {
-  const table = tableSchemas[key];
-  if (table.route) {
+  const table = tableSchemas[key as keyof typeof tableSchemas];
+  if ('route' in table && table.route) {
     apiConfig.push({
       table: table.tableName,
-      definition: table.definition,
+      definition: 'definition' in table ? table.definition : {},
       route: table.route,
       access: table.access,
-      hooks: table.hooks,
-      fields: table.fields,
-      name: table.name,
-      icon: table.icon,
+      hooks: 'hooks' in table ? table.hooks : undefined,
+      fields: 'fields' in table ? table.fields : undefined,
+      name: 'name' in table ? table.name : '',
+      icon: 'icon' in table ? table.icon : ''
     });
   }
 }
 
 export const config: SonicJSConfig = {
   apiConfig: apiConfig,
-  adminAccessControl: isAdminOrEditor,
+  adminAccessControl: isAdminOrEditor
 };
 
 export const sonicJsConfig: SonicJSConfig = {
   apiConfig: apiConfig,
-  adminAccessControl: isAdminOrEditor,
+  adminAccessControl: isAdminOrEditor
 };
