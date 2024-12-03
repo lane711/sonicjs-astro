@@ -8,7 +8,9 @@ if (Astro.locals.user === null) {
 }
 
 const data = Astro.locals;
-data.user = {};
+
+const { user } = Astro.locals;
+const fullName = `${user.firstName} ${user.lastName}`;
 
 import AdminLayout from './layouts/admin-layout.astro'
 
@@ -33,8 +35,8 @@ import AdminLayout from './layouts/admin-layout.astro'
             <div class="sm:flex-auto">
 
               {
-                session ? (
-                  <p>Welcome {session.user?.name}</p>
+                user ? (
+                  <p>Welcome {fullName}</p>
                 ) : (
                   <p>Not logged in</p>
                 )
