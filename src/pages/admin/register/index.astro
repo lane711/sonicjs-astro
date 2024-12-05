@@ -6,8 +6,8 @@ import { Image } from "astro:assets";
 import { sendEmail } from "../../../services/email";
 import { doesAdminAccountExist } from "@services/auth";
 
-let isAdminAccount = await doesAdminAccountExist(Astro.locals.runtime.env.D1) ;
-console.log('isAdminAccount register', isAdminAccount)
+let isAdminAccountCreated = await doesAdminAccountExist(Astro.locals.runtime.env.D1) ;
+console.log('isAdminAccountCreated register', isAdminAccountCreated)
 
 
 
@@ -15,7 +15,7 @@ if (Astro.request.method === "POST") {
   try {
     const formData = await Astro.request.formData();
     const data = convertFormDataToObject(formData);
-    if(isAdminAccount){
+    if(!isAdminAccountCreated){
       data.role = "admin";
     }
     var json = JSON.stringify(data);

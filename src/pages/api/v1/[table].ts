@@ -142,11 +142,14 @@ export const POST: APIRoute = async (context) => {
   const route = params.table;
   let entry;
   try {
-    entry = await apiConfig.filter((tbl) => tbl.route === route)[0];
+    entry = await apiConfig.find((tbl) => tbl.route === route);
+    if(!entry) {
+      throw new Error(`Table "${route}" not defined in your schema`);
+    }
   } catch (error) {
     return new Response(
       JSON.stringify({
-        error: `Table "${tableName}" not defined in your schema`,
+        error: `Table "${route}" not defined in your schema`,
       }),
       { status: 500 }
     );

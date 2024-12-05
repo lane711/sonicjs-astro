@@ -1,4 +1,4 @@
-import { sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { sqliteTable, text, uniqueIndex } from "drizzle-orm/sqlite-core";
 import { relations, type InferSelectModel } from "drizzle-orm";
 import { auditSchema } from "./audit";
 import * as posts from "./posts";
@@ -25,7 +25,13 @@ export const definition = {
 export const table = sqliteTable(tableName, {
   ...definition,
   ...auditSchema,
-});
+},
+(table) => {
+  return {
+    emailIndex: uniqueIndex("email_idx").on(table.email),
+  };
+}
+);
 
 export type User = InferSelectModel<typeof table>;
 

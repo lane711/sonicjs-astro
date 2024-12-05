@@ -74,8 +74,8 @@ export async function insertD1Data(d1, kv, table, data) {
   const schema = getRepoFromTable(table);
   try {
     // let sql = db.insert(schmea).values(data).getSQL();
-    let result = await db.insert(schema).values(data).returning().get();
-    return result;
+    let result = await db.insert(schema).values(data);
+    return data;
   } catch (error) {
     return error;
   }

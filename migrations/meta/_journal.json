@@ -8,6 +8,13 @@
       "when": 1731702376480,
       "tag": "0000_breezy_thundra",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1733361783268,
+      "tag": "0001_lush_kinsey_walden",
+      "breakpoints": true
     }
   ]
 }
