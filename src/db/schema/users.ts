@@ -7,6 +7,7 @@ import * as comments from "./comments";
 // import * as userSessions from "./userSessions";
 import { isAdmin, isAdminOrEditor, isAdminOrUser } from "../config-helpers";
 import type { ApiConfig } from "../routes";
+import { hashString } from "@services/cyrpt";
 export const tableName = "users";
 export const name = "Users";
 
@@ -65,6 +66,26 @@ export const access: ApiConfig["access"] = {
       },
       update: isAdmin,
     },
+  },
+};
+
+export const hooks: ApiConfig["hooks"] = {
+  resolveInput: {
+    create: async (context, data) => {
+      if (data.password) {
+        data.password = await hashString(data.password);
+      }
+      // if (context.locals.runtime.user?.userId) {
+      //   data.userId = ctx.get("user").userId;
+      // }
+      return data;
+    },
+    // update: (ctx, id, data) => {
+    //   if (ctx.locals.get("user")?.userId) {
+    //     data.userId = ctx.get("user").userId;
+    //   }
+    //   return data;
+    // },
   },
 };
 

@@ -17,7 +17,11 @@ export const login = async (
     .where(eq(userTable.email, email));
   const user = record[0];
 
-  const isPasswordCorrect = await compareStringToHash(password, user.password);
+  let userPassword = user?.password;
+  if (!user) {
+    return null;
+  }
+  const isPasswordCorrect = await compareStringToHash(password, userPassword);
 
   if (isPasswordCorrect) {
     const token = generateSessionToken();
@@ -29,4 +33,21 @@ export const login = async (
     return {bearer: token, expires: session.activeExpires};
   }
 };
+
+export const doesAdminAccountExist = async (
+  d1
+): Promise<boolean> => {
+  const db = drizzle(d1);
+
+  const record = await db
+    .select()
+    .from(userTable)
+    .where(eq(userTable.role, 'admin'));
+  const adminUser = record[0];
+
+  if (!adminUser) {
+    return false;
+  }
+  return true;
+}
 

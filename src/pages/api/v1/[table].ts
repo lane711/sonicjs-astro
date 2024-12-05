@@ -12,9 +12,13 @@ import {
   getOperationCreateResult,
 } from "../../../auth/auth-helpers";
 import { deleteRecord, getRecords, insertRecord } from "../../../services/data";
-import { return204, return400, return404, return500 } from "../../../services/return-types";
-
-
+import {
+  return204,
+  return400,
+  return404,
+  return500,
+} from "../../../services/return-types";
+import { hashString } from "@services/cyrpt";
 
 export const GET: APIRoute = async (context) => {
   const start = Date.now();
@@ -35,8 +39,6 @@ export const GET: APIRoute = async (context) => {
 
   const { env } = context.locals.runtime;
   // const db = drizzle(env.D1);
-
-
 
   const request = context.request;
 
@@ -140,7 +142,7 @@ export const POST: APIRoute = async (context) => {
   const route = params.table;
   let entry;
   try {
-    entry = apiConfig.filter((tbl) => tbl.route === route)[0];
+    entry = await apiConfig.filter((tbl) => tbl.route === route)[0];
   } catch (error) {
     return new Response(
       JSON.stringify({
@@ -159,13 +161,13 @@ export const POST: APIRoute = async (context) => {
   // const table = apiConfig.find((entry) => entry.route === route).table;
   // context.env.D1DATA = context.env.D1DATA;
 
-  if(content.data.password) {
-    content.data.password = await bcrypt.hash(content.data.password, 10);
+
+
+  if (entry?.hooks?.resolveInput?.create) {
+    content.data = await entry.hooks.resolveInput.create(context, content.data);
   }
 
-  if (entry.hooks?.beforeOperation) {
-    await entry.hooks.beforeOperation(content, "create", undefined, content);
-  }
+
 
   content.table = entry.table;
 
@@ -191,7 +193,11 @@ export const POST: APIRoute = async (context) => {
     //     content.data
     //   );
     // }
-    console.log("posting new record content filtered?", content.data);
+
+    if (entry.hooks?.beforeOperation) {
+      await entry.hooks.beforeOperation(content, "create", undefined, content);
+    }
+
     const result = await insertRecord(env.D1, {}, content);
     console.log("create result", result);
 
@@ -357,5 +363,3 @@ export const DELETE: APIRoute = async (context) => {
 //     }
 //   });
 // });
-
-

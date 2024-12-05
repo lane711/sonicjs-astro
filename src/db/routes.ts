@@ -3,7 +3,7 @@ import * as posts from "./schema/posts";
 import * as comments from "./schema/comments";
 import * as categories from "./schema/categories";
 import * as categoriesToPosts from "./schema/categoriesToPosts";
-import * as userKeys from "./schema/userKeys";
+// import * as userKeys from "./schema/userKeys";
 import * as userSessions from "./schema/userSessions";
 
 // import { AppContext } from '../server';
@@ -213,7 +213,6 @@ export const tableSchemas = {
   comments,
   categories,
   categoriesToPosts,
-  userKeys,
   userSessions,
 };
 

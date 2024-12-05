@@ -2,6 +2,16 @@
 import { convertFormDataToObject } from '@services/utils';
 import LoginLayout from '../layouts/admin-login.astro'
 import { setSessionTokenCookie } from '@services/cookies';
+import { doesAdminAccountExist } from '@services/auth';
+
+//check if there is an admin account, if not redirect admin to register
+let isAdminAccount = await doesAdminAccountExist(Astro.locals.runtime.env.D1) ;
+console.log('isAdminAccount login', isAdminAccount)
+
+if(isAdminAccount === false){
+  return Astro.redirect(`/admin/register`);
+}
+
 
 if (Astro.request.method === "POST") {
   try {
@@ -83,8 +93,8 @@ if (Astro.request.method === "POST") {
       </form>
   
       <p class="mt-10 text-center text-sm text-gray-400">
-        Not a member?
-        <a href="#" class="font-semibold leading-6 text-indigo-400 hover:text-indigo-300">Start a 14 day free trial</a>
+        No account yet?
+        <a href="/admin/register" class="font-semibold leading-6 text-indigo-400 hover:text-indigo-300">Register</a>
       </p>
     </div>
   </div>
