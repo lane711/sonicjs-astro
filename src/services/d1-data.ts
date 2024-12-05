@@ -77,7 +77,7 @@ export async function insertD1Data(d1, kv, table, data) {
     let result = await db.insert(schema).values(data);
     return data;
   } catch (error) {
-    return error;
+    return { error };
   }
 }
 

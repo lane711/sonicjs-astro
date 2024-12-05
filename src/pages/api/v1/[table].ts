@@ -214,10 +214,10 @@ export const POST: APIRoute = async (context) => {
       );
     }
     return new Response(
-      JSON.stringify({
-        data: result?.data,
-      }),
-      { status: 201 }
+      JSON.stringify(
+        result,
+      ),
+      { status: result?.code }
     );
   } catch (error) {
     console.log("error posting content", error);
