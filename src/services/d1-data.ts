@@ -205,6 +205,14 @@ export function whereClauseBuilder(filters: any) {
   return whereClause;
 }
 
+export async function getTableCounts(db, table) {
+  const { results } = await db
+    .prepare(`SELECT count(id) as count FROM '${table}';`)
+    .all();
+
+  return results[0];
+}
+
 export function processCondition(condition) {
   switch (condition) {
     case "$eq":
