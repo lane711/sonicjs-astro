@@ -11,7 +11,7 @@ import SonicJsLogo from '../../../../public/images/sonicjs-logo.svg';
 import { Picture } from "astro:assets";
 import { Image } from 'astro:assets';
 
-
+const profileLink = '/admin/forms/users/' + Astro.locals.user.id;
 ---
 
 <html lang="en" class="h-full bg-gray-900"></html>
@@ -336,7 +336,7 @@ import { Image } from 'astro:assets';
                 </li>
                 <li class="mt-auto">
                   <a
-                    href="#"
+                    href="/admin/settings"
                     class="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
                   >
                     <svg
@@ -511,7 +511,7 @@ import { Image } from 'astro:assets';
 
             <li class="mt-auto">
               <a
-                href="#"
+                href="/admin/settings"
                 class="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
               >
                 <svg
@@ -673,7 +673,7 @@ import { Image } from 'astro:assets';
               >
                 <!-- Active: "bg-gray-50", Not Active: "" -->
                 <a
-                  href="#"
+                  href={profileLink}
                   class="block px-3 py-1 text-sm leading-6 text-gray-900"
                   role="menuitem"
                   tabindex="-1"
