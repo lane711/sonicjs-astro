@@ -255,11 +255,11 @@ export async function insertRecord(d1, kv, data) {
   content.data.id = id;
   let error = "";
 
-  let result = {};
+  let result = { error:{message:""} };
   try {
     result = await insertD1Data(d1, kv, content.table, content.data);
 
-    if(result.error){
+    if(result?.error){
       return { status: 500, message: result.error.message };
 
     }
