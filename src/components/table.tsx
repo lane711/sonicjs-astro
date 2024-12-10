@@ -370,8 +370,6 @@ function Table({ tableConfig }) {
   }
 }
 
-//     <span className="ml-2 flex-none rounded bg-gray-100 text-gray-900 group-hover:bg-gray-200">
-
 const arrowDown = () => {
   return (
     <span className="ml-2 flex-none rounded bg-gray-800 text-gray-200 group-hover:bg-gray-700">
