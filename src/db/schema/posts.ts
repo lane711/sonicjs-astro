@@ -59,7 +59,7 @@ export const access: ApiConfig["access"] = {
       if (isAdmin(ctx)) {
         return true;
       } else {
-        const user = ctx.get("user");
+        const user = Astro.locals.user;
         if (user?.userId) {
           // Return filter so update doesn't happen if userId doesn't match
           return {
@@ -74,7 +74,7 @@ export const access: ApiConfig["access"] = {
       if (isAdmin(ctx)) {
         return true;
       } else {
-        const user = ctx.get("user");
+        const user = Astro.locals.user;
         if (user?.userId) {
           // Return filter so update doesn't happen if userId doesn't match
           return {
@@ -95,14 +95,14 @@ export const access: ApiConfig["access"] = {
 export const hooks: ApiConfig["hooks"] = {
   resolveInput: {
     create: (ctx, data) => {
-      if (ctx.locals.runtime.user?.userId) {
-        data.userId = ctx.get("user").userId;
+      if (ctx.locals.user?.id) {
+        data.userId = ctx.locals.user.id;
       }
       return data;
     },
     update: (ctx, id, data) => {
-      if (ctx.locals.get("user")?.userId) {
-        data.userId = ctx.get("user").userId;
+      if (ctx.locals.user?.id) {
+        data.userId = ctx.locals.user.id;
       }
       return data;
     },
@@ -121,12 +121,12 @@ export const fields: ApiConfig["fields"] = {
   },
   image: {
     type: "file",
-    bucket: (ctx) => ctx.env.R2STORAGE,
+    bucket: (ctx) => ctx.locals.runtime.env.R2,
     path: "images",
   },
   images: {
     type: "file[]",
-    bucket: (ctx) => ctx.env.R2STORAGE,
+    bucket: (ctx) => ctx.locals.runtime.env.R2,
     path: "images",
   },
   tags: {

@@ -2,4 +2,5 @@
 
 interface Env {
 	D1: D1Database;
+	R2: R2Database;
 }

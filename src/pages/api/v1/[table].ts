@@ -159,7 +159,7 @@ export const POST: APIRoute = async (context) => {
 
   const request = context.request;
 
-  let content = {};
+  let content: { data: any; table?: string } = { data: {} };
   content.data = await request.json();
   // const table = apiConfig.find((entry) => entry.route === route).table;
   // context.env.D1DATA = context.env.D1DATA;
@@ -217,7 +217,7 @@ export const POST: APIRoute = async (context) => {
       JSON.stringify(
         result,
       ),
-      { status: result?.code }
+      { status: result?.status || 500 }
     );
   } catch (error) {
     console.log("error posting content", error);

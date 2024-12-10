@@ -32,7 +32,7 @@ import {
 //get single record
 export const GET = async (context) => {
   // const start = Date.now();
-  const params = context.params;
+  let params = context.params;
 
   const tableName = params.table;
   let entry;
@@ -188,7 +188,7 @@ export const PUT: APIRoute = async (context) => {
       params
     );
     if (entry?.hooks?.afterOperation) {
-      await entry.hooks.afterOperation(context, "update", id, content, result);
+      await entry.hooks.afterOperation(context, "update", params.id, content, result);
     }
     return return200(result.data);
   } catch (error) {

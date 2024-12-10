@@ -1,9 +1,11 @@
 ---
+import { invalidateSession } from "@services/sessions";
+
 if (Astro.cookies.has('session')) {
     const sessionId = Astro.cookies.get('session')?.value;
     try {
       if (sessionId) {
-        await Astro.locals.auth.invalidateSession(sessionId);
+        await invalidateSession(Astro.locals.runtime.env.D1, sessionId);
       }
     } catch (error) {
       if (error instanceof Error) {

@@ -1,4 +1,4 @@
-export const return200 = (data = []) => {
+export const return200 = (data = {}) => {
   return new Response(
     JSON.stringify({
       data,

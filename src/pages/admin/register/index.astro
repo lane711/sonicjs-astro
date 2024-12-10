@@ -14,7 +14,7 @@ console.log('isAdminAccountCreated register', isAdminAccountCreated)
 if (Astro.request.method === "POST") {
   try {
     const formData = await Astro.request.formData();
-    const data = convertFormDataToObject(formData);
+    let data: { role?: string } = convertFormDataToObject(formData);
     if(!isAdminAccountCreated){
       data.role = "admin";
     }

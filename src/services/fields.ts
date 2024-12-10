@@ -1,4 +1,4 @@
-export const getFieldDefinitions = (tableConfig, record) => {
+export const getFieldDefinitions = (tableConfig, record?) => {
   const definitionObject = tableConfig.definition;
 
   // Convert the nested objects to an array

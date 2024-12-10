@@ -59,14 +59,14 @@ export const access: ApiConfig["access"] = {
 export const hooks: ApiConfig["hooks"] = {
   resolveInput: {
     create: (ctx, data) => {
-      if (ctx.get("user")?.userId) {
-        data.userId = ctx.get("user").userId;
+      if (ctx.locals.user?.userId) {
+        data.userId = ctx.locals.user.userId;
       }
       return data;
     },
     update: (ctx, id, data) => {
-      if (ctx.get("user")?.userId) {
-        data.userId = ctx.get("user").userId;
+      if (ctx.locals.user?.userId) {
+        data.userId = ctx.locals.user.userId;
       }
       return data;
     },

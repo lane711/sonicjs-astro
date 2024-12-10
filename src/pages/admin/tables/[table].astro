@@ -5,12 +5,11 @@ import Table from "../../../components/table";
 import { getFieldDefinitions } from "../../../services/fields";
 import DeleteConfirmation from "../../../components/delete-confirmation";
 
-const { table } = Astro.params;
-const tableConfigRecord = apiConfig.find((t) => t.route === table);
+const tableConfigRecord = apiConfig.find((t) => t.route === Astro.params.table);
 const tableConfig = getFieldDefinitions(tableConfigRecord);
 
 ---
 
-<AdminLayout title=`SonicJs Admin` | {table} `>
+<AdminLayout title=`SonicJs Admin` | {Astro.params.table} `>
   <Table client:load tableConfig={tableConfig} />
 </AdminLayout>

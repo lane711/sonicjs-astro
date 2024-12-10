@@ -38,7 +38,7 @@ if (Astro.request.method === "POST") {
       // if (!response.ok) {
       //   throw new Error("Network response was not ok");
       // }
-      const result = await response.json();
+      const result = await response.json() as { bearer: string, expires: number };
       console.log("Success:", result);
 
       //add auth cookie
