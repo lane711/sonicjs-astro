@@ -128,14 +128,14 @@ function Table({ tableConfig }) {
   }, [confirmDelete]);
 
   const getData = (originPath) => {
-    if (originPath) {
-      fetch(`${originPath}`).then(async (response) => {
-        const { data } = await response.json();
-        setData(data.data);
-        setLoading(false);
-      });
-    }
-  };
+      if (originPath) {
+        fetch(`${originPath}`).then(async (response) => {
+          const responseData: { data: any } = await response.json();
+          setData(responseData.data);
+          setLoading(false);
+        });
+      }
+    };
 
   const deleteData = (id) => {
     if (id) {
@@ -321,7 +321,7 @@ function Table({ tableConfig }) {
                     onClick={() => {
                       table.previousPage();
                     }}
-                    isDisabled={table.getCanPreviousPage()}
+                    disabled={table.getCanPreviousPage()}
                     className="inline-flex items-center border-t-2 border-transparent pr-1 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-300"
                   >
                     <ArrowLongLeftIcon
@@ -349,7 +349,7 @@ function Table({ tableConfig }) {
                     onClick={() => {
                       table.nextPage();
                     }}
-                    isDisabled={table.getCanNextPage()}
+                    disabled={table.getCanNextPage()}
                     className="inline-flex items-center border-t-2 border-transparent pl-1 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-300"
                   >
                     Next

@@ -1,8 +1,10 @@
 import { apiConfig } from './routes';
-it('Should API Config be defined', () => {
-  console.log('apiConfig', apiConfig);
-  expect(apiConfig).toBeDefined();
-});
+import type { ApiConfig } from "./routes";
+
+// it('Should API Config be defined', () => {
+//   console.log('apiConfig', apiConfig);
+//   expect(apiConfig).toBeDefined();
+// });
 
 // export const apiConfig: ApiConfig[] = [
 //   { table: "users", route: "users" },

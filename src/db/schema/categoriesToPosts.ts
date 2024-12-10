@@ -4,6 +4,7 @@ import { auditSchema } from './audit';
 import * as categories from './categories';
 import * as posts from './posts';
 import { isAdminOrEditor } from '../config-helpers';
+import type { ApiConfig } from "../routes";
 
 export const tableName = 'categoriesToPosts';
 

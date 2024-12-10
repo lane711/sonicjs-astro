@@ -6,42 +6,43 @@ import { isNotNull } from 'drizzle-orm';
 import type { APIContext as AppContext } from "astro";
 
 import type { SonicJSFilter, ApiConfig } from '../db/routes';
+import { getRecords } from '@services/data';
 
-export const hasUser = async (ctx: AppContext) => {
-  const fn = async function () {
-    const db = drizzle(ctx.env.D1DATA, {
-      schema: {
-        users: tableSchemas.users.table,
-        usersRelations: tableSchemas.users.relation,
-        userKeys: tableSchemas.userKeys.table,
-        userKeysRelations: tableSchemas.userKeys.relation,
-        userSessions: tableSchemas.userSessions.table,
-        userSessionsRelations: tableSchemas.userSessions.relation
-      }
-    });
-    const data = await db.query.users.findMany({
-      with: {
-        keys: {
-          where(fields) {
-            return isNotNull(fields.hashed_password);
-          }
-        }
-      }
-    });
-    const result = data.filter((user) => user.keys?.length > 0);
-    return result;
-  };
+// export const hasUser = async (ctx: AppContext) => {
+//   const fn = async function () {
+//     const db = drizzle(ctx.env.D1DATA, {
+//       schema: {
+//         users: tableSchemas.users.table,
+//         usersRelations: tableSchemas.users.relation,
+//         // userKeys: tableSchemas.userKeys.table,
+//         // userKeysRelations: tableSchemas.userKeys.relation,
+//         userSessions: tableSchemas.userSessions.table,
+//         userSessionsRelations: tableSchemas.userSessions.relation
+//       }
+//     });
+//     const data = await db.query.users.findMany({
+//       with: {
+//         keys: {
+//           where(fields) {
+//             return isNotNull(fields.hashed_password);
+//           }
+//         }
+//       }
+//     });
+//     const result = data.filter((user) => user.keys?.length > 0);
+//     return result;
+//   };
 
-  const result = await getRecords(
-    ctx,
-    'custom',
-    {},
-    'hasUserWithKeyCheck',
-    'd1',
-    fn
-  );
-  return result.data.length > 0;
-};
+//   const result = await getRecords(
+//     ctx,
+//     'custom',
+//     {},
+//     'hasUserWithKeyCheck',
+//     'd1',
+//     fn
+//   );
+//   return result.data.length > 0;
+// };
 export async function getApiAccessControlResult(
   operationAccessControl:
     | boolean

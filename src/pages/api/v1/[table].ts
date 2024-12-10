@@ -22,7 +22,8 @@ import { hashString } from "@services/cyrpt";
 
 export const GET: APIRoute = async (context) => {
   const start = Date.now();
-  const params = context.params;
+  let params: { table?: string, id?: string, accessControlResult?:{}, limit?: string } = {};
+  params = context.params;
 
   const tableName = params.table;
   let entry;
@@ -54,14 +55,15 @@ export const GET: APIRoute = async (context) => {
     await entry.hooks.beforeOperation(context, "read", params.id);
   }
 
-  const accessControlResult = await getApiAccessControlResult(
+  let accessControlResult = {};
+   accessControlResult = await getApiAccessControlResult(
     entry?.access?.operation?.read || true,
     entry?.access?.filter?.read || true,
     true,
     context,
     params.id,
     entry.table
-  );
+  ) as {};
 
   if (typeof accessControlResult === "object") {
     params.accessControlResult = { ...accessControlResult };
