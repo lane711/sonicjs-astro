@@ -130,8 +130,9 @@ function Table({ tableConfig }) {
   const getData = (originPath) => {
       if (originPath) {
         fetch(`${originPath}`).then(async (response) => {
+          debugger;
           const responseData: { data: any } = await response.json();
-          setData(responseData.data);
+          setData(responseData.data.data);
           setLoading(false);
         });
       }
