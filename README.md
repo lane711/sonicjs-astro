@@ -1,47 +1,26 @@
-# Astro Starter Kit: Minimal
+# SonicJs Headless CMS
 
-```sh
-npm create astro@latest -- --template minimal
-```
+## Overview
+SonicJs is a headless CMS built on Astro and designed to run on Cloudflare. It provides a flexible and scalable solution for managing content, leveraging modern web technologies.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/minimal)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/minimal)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/minimal/devcontainer.json)
+See [https://sonicjs.com/](https://sonicjs.com/) for full docs.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Features
+- **Built on Astro**: Leverages the power of Astro for fast and optimized static site generation.
+- **Cloudflare Integration**: Runs seamlessly on Cloudflare for enhanced performance and security.
+- **React Support**: Integrates with React for building dynamic and interactive user interfaces.
+- **Tailwind CSS**: Utilizes Tailwind CSS for rapid UI development.
+- **Secure Authentication**: Implements secure authentication mechanisms using `@node-rs/argon2` and other crypto libraries.
+- **Database Management**: Uses Drizzle ORM for database interactions and migrations.
 
-## 🚀 Project Structure
+## Getting Started
 
-Inside of your Astro project, you'll see the following folders and files:
+### Prerequisites
+- Node.js (v16 or higher)
+- npm or yarn
 
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
-
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
-
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+### Installation
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/your-username/sonicjs-astro.git
+   cd sonicjs-astro
