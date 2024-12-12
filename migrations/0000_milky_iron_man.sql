@@ -1,6 +1,6 @@
 CREATE TABLE `categories` (
 	`id` text PRIMARY KEY NOT NULL,
-	`title` text,
+	`title` text NOT NULL,
 	`body` text,
 	`createdOn` integer,
 	`updatedOn` integer
@@ -19,9 +19,9 @@ CREATE TABLE `categoriesToPosts` (
 --> statement-breakpoint
 CREATE TABLE `comments` (
 	`id` text PRIMARY KEY NOT NULL,
-	`body` text,
-	`userId` text,
-	`postId` integer,
+	`body` text NOT NULL,
+	`userId` text NOT NULL,
+	`postId` integer NOT NULL,
 	`tags` text,
 	`createdOn` integer,
 	`updatedOn` integer
@@ -29,9 +29,9 @@ CREATE TABLE `comments` (
 --> statement-breakpoint
 CREATE TABLE `posts` (
 	`id` text PRIMARY KEY NOT NULL,
-	`title` text,
-	`body` text,
-	`userId` text,
+	`title` text NOT NULL,
+	`body` text NOT NULL,
+	`userId` text NOT NULL,
 	`image` text,
 	`images` text,
 	`tags` text,
@@ -54,12 +54,14 @@ CREATE TABLE `users` (
 	`firstName` text,
 	`lastName` text,
 	`email` text,
-	`password` text,
-	`role` text,
+	`password` text NOT NULL,
+	`role` text DEFAULT 'user',
 	`createdOn` integer,
 	`updatedOn` integer
 );
 --> statement-breakpoint
 CREATE INDEX `commentsUserIdIndex` ON `comments` (`userId`);--> statement-breakpoint
 CREATE INDEX `commentsPostIdIndex` ON `comments` (`postId`);--> statement-breakpoint
-CREATE INDEX `postUserIdIndex` ON `posts` (`userId`);
+CREATE INDEX `postUserIdIndex` ON `posts` (`userId`);--> statement-breakpoint
+CREATE UNIQUE INDEX `users_email_unique` ON `users` (`email`);--> statement-breakpoint
+CREATE UNIQUE INDEX `email_idx` ON `users` (`email`);

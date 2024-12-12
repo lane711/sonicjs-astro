@@ -188,7 +188,13 @@ export const PUT: APIRoute = async (context) => {
       params
     );
     if (entry?.hooks?.afterOperation) {
-      await entry.hooks.afterOperation(context, "update", params.id, content, result);
+      await entry.hooks.afterOperation(
+        context,
+        "update",
+        params.id,
+        content,
+        result
+      );
     }
     return return200(result.data);
   } catch (error) {
@@ -270,8 +276,13 @@ export const DELETE: APIRoute = async (context) => {
     //   await entry.hooks.afterOperation(context, 'delete', id, record, result);
     // }
 
-    console.log("returning 204");
-    return return204();
+    return new Response(JSON.stringify(result), {
+      status: 204,
+      headers: { "Content-Type": "application/json" },
+    });
+
+    // console.log("returning 204");
+    // return return204();
   } else {
     console.log("content not found");
     return return404();

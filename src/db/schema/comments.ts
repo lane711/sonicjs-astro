@@ -17,9 +17,9 @@ export const name = "Comments";
 
 export const definition = {
   id: text("id").primaryKey(),
-  body: text("body"),
-  userId: text("userId"),
-  postId: integer("postId"),
+  body: text("body").notNull(),
+  userId: text("userId").notNull(),
+  postId: integer("postId").notNull(),
   tags: text("tags", { mode: "json" }).$type<string[]>(),
 };
 

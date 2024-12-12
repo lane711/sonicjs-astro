@@ -91,6 +91,7 @@ function Table({ tableConfig }) {
   //   }),
   // ];
 
+
   const table = useReactTable({
     data: data ?? fallbackData,
     columns,
@@ -130,9 +131,8 @@ function Table({ tableConfig }) {
   const getData = (originPath) => {
       if (originPath) {
         fetch(`${originPath}`).then(async (response) => {
-          debugger;
           const responseData: { data: any } = await response.json();
-          setData(responseData.data.data);
+          setData(responseData.data);
           setLoading(false);
         });
       }

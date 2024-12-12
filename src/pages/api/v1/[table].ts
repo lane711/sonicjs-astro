@@ -22,7 +22,12 @@ import { hashString } from "@services/cyrpt";
 
 export const GET: APIRoute = async (context) => {
   const start = Date.now();
-  let params: { table?: string, id?: string, accessControlResult?:{}, limit?: string } = {};
+  let params: {
+    table?: string;
+    id?: string;
+    accessControlResult?: {};
+    limit?: string;
+  } = {};
   params = context.params;
 
   const tableName = params.table;
@@ -56,14 +61,14 @@ export const GET: APIRoute = async (context) => {
   }
 
   let accessControlResult = {};
-   accessControlResult = await getApiAccessControlResult(
+  accessControlResult = (await getApiAccessControlResult(
     entry?.access?.operation?.read || true,
     entry?.access?.filter?.read || true,
     true,
     context,
     params.id,
     entry.table
-  ) as {};
+  )) as {};
 
   if (typeof accessControlResult === "object") {
     params.accessControlResult = { ...accessControlResult };
@@ -116,12 +121,18 @@ export const GET: APIRoute = async (context) => {
     // timerLog('api get', start, end);
 
     // return context.json({ ...data, executionTime });
-    return new Response(
-      JSON.stringify({
-        data,
-        executionTime,
-      })
-    );
+    // return new Response(
+    //   JSON.stringify({
+    //     data,
+    //     executionTime,
+    //   }, {headers: {
+    //     "Content-Type": "application/json",
+    //   }})
+    // );
+
+    return new Response(JSON.stringify(data), {
+      headers: { "Content-Type": "application/json" },
+    });
   } catch (error) {
     console.log(error);
     return new Response(
@@ -145,7 +156,7 @@ export const POST: APIRoute = async (context) => {
   let entry;
   try {
     entry = await apiConfig.find((tbl) => tbl.route === route);
-    if(!entry) {
+    if (!entry) {
       throw new Error(`Table "${route}" not defined in your schema`);
     }
   } catch (error) {
@@ -166,13 +177,9 @@ export const POST: APIRoute = async (context) => {
   // const table = apiConfig.find((entry) => entry.route === route).table;
   // context.env.D1DATA = context.env.D1DATA;
 
-
-
   if (entry?.hooks?.resolveInput?.create) {
     content.data = await entry.hooks.resolveInput.create(context, content.data);
   }
-
-
 
   content.table = entry.table;
 
@@ -215,12 +222,11 @@ export const POST: APIRoute = async (context) => {
         result
       );
     }
-    return new Response(
-      JSON.stringify(
-        result,
-      ),
-      { status: result?.status || 500 }
-    );
+    return new Response(JSON.stringify(result), {
+      status: result?.status || 500,
+      headers: { "Content-Type": "application/json" },
+    });
+
   } catch (error) {
     console.log("error posting content", error);
     return return500(error);

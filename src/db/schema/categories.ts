@@ -17,7 +17,7 @@ export const route = "categories";
 
 export const definition = {
   id: text("id").primaryKey(),
-  title: text("title"),
+  title: text("title").notNull(),
   body: text("body"),
 };
 

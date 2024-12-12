@@ -18,9 +18,9 @@ export const icon = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox
 
 export const definition = {
   id: text("id").primaryKey(),
-  title: text("title"),
-  body: text("body"),
-  userId: text("userId"),
+  title: text("title").notNull(),
+  body: text("body").notNull(),
+  userId: text("userId").notNull(),
   image: text("image"),
   images: text("images", { mode: "json" }).$type<string[]>(),
   tags: text("tags", { mode: "json" }).$type<string[]>(),

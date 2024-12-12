@@ -18,9 +18,9 @@ export const definition = {
   id: text("id").primaryKey(),
   firstName: text("firstName"),
   lastName: text("lastName"),
-  email: text("email"),
-  password: text("password"),
-  role: text("role").$type<"admin" | "user">(),
+  email: text("email").unique(),
+  password: text("password").notNull(),
+  role: text("role").$type<"admin" | "user">().default("user"),
 };
 
 export const table = sqliteTable(
