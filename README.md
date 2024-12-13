@@ -1,12 +1,21 @@
 # SonicJs Headless CMS
 
 ## Overview
+
+**SonicJs is the Fastest Headless CMS / API Framework in the World.**
+
+It is capable of delivering API requests anywhere in the world in under 100 milliseconds in most cases.
+
+This results in extremely fast page/app loads for end users.
+
 SonicJs is a headless CMS built on Astro and designed to run on Cloudflare. It provides a flexible and scalable solution for managing content, leveraging modern web technologies.
 
 ## Dedicated Documentation Website
-Read the docs here [https://sonicjs.com]
+Read the docs here [https://sonicjs.com](https://sonicjs.com])
 
 ## How Fast is "Blazingly" Fast?
+
+Details of our performance benchmark can be found at SonicJs.com. Here is a partial chart of our finding.
 
 | Platform      | Average Response Time | Difference |
 | ----------- | ----------- | ----------- |
@@ -16,13 +25,14 @@ Read the docs here [https://sonicjs.com]
 
 
 ## Features
+- **Auto-Generated CRUD Endpoints**: Define your data schmea and permission rules in code and SonicJs will automatically generate the associated endpoints at runtime (not using code generation like other tools)
+- **Admin UI**: Manage all data from the dynamic administrative console. This includes the ability to search and sort, edit, create new records, etc.
 - **Built on Astro**: The Admin UI leverages the power of Astro for fast and optimized static site generation. You can also build you website/app on top on this repo for a single front end/back end/API deployment.
-- **Cloudflare Integration**: Runs seamlessly on Cloudflare for enhanced performance and security.
-- **React Support**: Integrates with React for building dynamic and interactive user interfaces.
+- **Cloudflare Integration**: Runs seamlessly on Cloudflare for enhanced performance and security. Cloudflare offers a generous free hosting plan with paid versions starting a $5/month.
 - **Tailwind CSS**: Utilizes Tailwind CSS for rapid UI development.
 - **Secure Authentication**: Implements secure authentication mechanisms using `@node-rs/argon2` and other crypto libraries.
 - **Database Management**: Uses Drizzle ORM for database interactions and migrations.
-- **User Management**: Manage users information including roles from the UI
+- **User Management**: Manage user account data including roles from the UI.
 - **Authentication**: Manage user registration/login from your app with the built in API endpoints.
 
 
@@ -62,3 +72,14 @@ Read the docs here [https://sonicjs.com]
 1. Visit the Admin UI in your browser:
    [http://localhost:4321](http://localhost:4321)
    ![Admin UI](https://sonicjs.com/images/sonicJs-admin-ui.png)
+
+## Need Help?
+1. Reach out on [Disocrd](https://discord.gg/8bMy6bv3sZ)
+2. Open a [ticket in Github](https://github.com/lane711/sonicjs/issues)
+
+
+## Contributions
+We gladly accept Pull Requests (PRs) from the community.
+
+## Licensing (MIT)
+This project is licensed under the MIT License. This means you are free to use, modify, and distribute this software under the following conditions:
